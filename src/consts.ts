@@ -4,6 +4,14 @@
 export const SITE_TITLE = 'Amaru Docs';
 export const SITE_DESCRIPTION = 'An open source Cardano node client, written in Rust';
 
+export const GITHUB_REPOS =
+  [ 'pragma-org/amaru'
+  , 'jeluard/amaru-doctor'
+  , 'pragma-org/uplc'
+  , 'pragma-org/amaru-treasury'
+  , 'SundaeSwap-finance/nawi'
+  ];
+
 export const SITE_METADATA = {
   title: {
     default: SITE_TITLE,
@@ -51,18 +59,17 @@ export const SITE_METADATA = {
     description: SITE_DESCRIPTION,
     images: ['/og-image.jpg'],
     creator: '@amaru_cardano',
+    handle: 'amaru_cardano',
+    profile_link:'https://x.com/amaru_cardano',
   },
   github: {
     org: 'pragma-org',
     user: 'amaru',
     repository_link: 'https://github.com/pragma-org/amaru.git',
+    discussions_link: 'https://github.com/pragma-org/amaru/discussions',
     stargazer_link: 'https://github.com/pragma-org/amaru/stargazers',
   },
   discord: {
     invitation_link: 'https://discord.gg/Zbbumu9NMz',
-  },
-  twitter: {
-    handle: 'amaru_cardano',
-    profile_link:'https://x.com/amaru_cardano',
   },
 };

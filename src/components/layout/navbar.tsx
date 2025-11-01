@@ -166,7 +166,7 @@ function Navbar({ currentPage }: NavbarProps) {
   return (
     <header
       className={cn(
-        'border-b transition-all duration-300',
+        'border-b transition-all duration-300 border-b-[#30e2a3]',
         isMenuColorInverted
           ? theme === 'dark'
             ? 'light bg-foreground text-background [&_*]:border-border/30'
@@ -400,7 +400,7 @@ const NavBarAction = ({
 
   return (
     <div className="bordered-div-padding flex items-center justify-between border lg:border-none lg:!p-0">
-      <a href={SITE_METADATA.github.repository_link} className="flex items-center">
+      <a href={SITE_METADATA.github.repository_link} target="_blank" className="flex items-center">
         <Button
           variant="ghost"
           className="gap-2 font-medium lg:text-base"
@@ -411,7 +411,7 @@ const NavBarAction = ({
         </Button>
       </a>
 
-      <a href={SITE_METADATA.discord.invitation_link} className="flex items-center">
+      <a href={SITE_METADATA.discord.invitation_link} target="_blank" className="flex items-center">
         <Button
           variant="ghost"
           className="gap-2 font-medium lg:text-base"

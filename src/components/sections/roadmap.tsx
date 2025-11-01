@@ -15,12 +15,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { EXTERNAL_LINKS } from '@/constants/external-links';
+import { SITE_METADATA } from '@/consts';
 import { cn } from '@/lib/utils';
 
 type Status = 'All' | 'In Progress' | 'Planned' | 'Shipped';
-
-const statuses: Status[] = ['All', 'In Progress', 'Planned', 'Shipped'];
 
 type RoadmapItem = {
   status: Exclude<Status, 'All'>;
@@ -33,97 +31,11 @@ type RoadmapItem = {
   };
 };
 
-const roadmapItems: RoadmapItem[] = [
-  {
-    status: 'In Progress',
-    title: 'Live preview editing',
-    description:
-      'Let content editors preview their changes in real-time within the CMS editor.',
-    date: 'Beta by May 2025',
-    team: {
-      name: 'Core Team',
-      image: '/layout/logo-icon.svg',
-    },
-  },
-  {
-    status: 'In Progress',
-    title: 'SvelteKit plugin',
-    description: 'First-class Scalar support for SvelteKit via a plugin.',
-    date: 'Q2 2025',
-    team: {
-      name: 'Core Team',
-      image: '/layout/logo-icon.svg',
-    },
-  },
-  {
-    status: 'Planned',
-    title: 'API tokens with granular scopes',
-    description:
-      'Create multiple tokens with read/write/scope-level permissions for teams and external services.',
-    date: 'Q3 2025',
-    team: {
-      name: 'Yassine Zaanouni',
-      image: '/images/blog/authors/yassine-zaanouni.webp',
-    },
-  },
-  {
-    status: 'Planned',
-    title: 'Image editor field type',
-    description:
-      'Add support for cropping, aspect ratios, alt-text, and focal point control in media uploads.',
-    date: 'Q3 2025',
-    team: {
-      name: 'Fedir Davydov',
-      image: '/images/blog/authors/fedir-davydov.webp',
-    },
-  },
-  {
-    status: 'Shipped',
-    title: 'Code-first schema sync',
-    description:
-      'Use TypeScript or JSON schema files to define content structure, sync to the UI automatically.',
-    date: 'April 2025',
-    team: {
-      name: 'Rob Austin',
-      image: '/images/blog/authors/robert-austin.webp',
-    },
-  },
-  {
-    status: 'Shipped',
-    title: 'GitHub integration (beta)',
-    description:
-      'Push/pull content and schema changes via GitHub. Ideal for content versioning and CI workflows.',
-    date: 'March 2025',
-    team: {
-      name: 'Core Team',
-      image: '/layout/logo-icon.svg',
-    },
-  },
-  {
-    status: 'Shipped',
-    title: 'Full-text search API',
-    description:
-      'A robust, built-in full-text search endpoint for your content — supports filters, relevance scoring, and language-aware stemming.',
-    date: 'February 2025',
-    team: {
-      name: 'Rob Austin',
-      image: '/images/blog/authors/robert-austin.webp',
-    },
-  },
-  {
-    status: 'Shipped',
-    title: 'Custom field components',
-    description:
-      'Support for embedding custom React/Vue/Svelte components as field editors — perfect for things like color pickers, map selectors, or signature pads.',
-    date: 'January 2025',
-    team: {
-      name: 'Core Team',
-      image: '/layout/logo-icon.svg',
-    },
-  },
-];
+type Props = { roadmapItems: RoadmapItem[] };
 
-export function RoadmapSection() {
+const statuses: Status[] = ['All', 'In Progress', 'Planned', 'Shipped'];
+
+export function RoadmapSection({ roadmapItems }: Props) {
   const [activeStatus, setActiveStatus] = useState<Status>('All');
 
   // Filter items based on active status
@@ -134,13 +46,22 @@ export function RoadmapSection() {
 
   return (
     <section className="container">
-      <div className="border-x">
-        <div className="hidden p-7.5 md:block" />
-
-        <div className="bordered-div-padding border-b">
+      <div>
+        <div className="bordered-div-padding border-x border-b border-[#30e2a3]">
           <h1 className="font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl">
             Roadmap
           </h1>
+          <div className="container">
+            <div className="flex items-center justify-center">
+              <img
+                src="/images/landing/roadmap.webp"
+                alt="Hero Image"
+                width='100%'
+                height='auto'
+                className="mask-b-from-80% mask-b-to-95% mask-r-from-80% mask-r-to-95% mask-t-from-80% mark-t-to-95% mask-l-from-80% mask-l-to-95%"
+              />
+            </div>
+          </div>
           <div className="mt-6 block md:hidden">
             <Select
               value={activeStatus}
@@ -160,7 +81,7 @@ export function RoadmapSection() {
           </div>
         </div>
 
-        <div className="bordered-div-padding hidden border-b md:block">
+        <div className="bordered-div-padding hidden border-x border-b border-[#30d0b1] md:block">
           <Tabs
             value={activeStatus}
             onValueChange={(value) => setActiveStatus(value as Status)}
@@ -175,7 +96,7 @@ export function RoadmapSection() {
           </Tabs>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 border-x border-[#30bcc2]">
           {filteredItems.map((item, index) => {
             // Determine if this is in the last row
             const isLastRow =
@@ -194,6 +115,7 @@ export function RoadmapSection() {
                 key={index}
                 item={item}
                 className={cn({
+                  'border-[#30bcc2]': true,
                   // No bottom border for last row items
                   'border-b-0': isLastRow,
                   // No right border for items in the right column
@@ -208,7 +130,7 @@ export function RoadmapSection() {
           })}
         </div>
 
-        <div className="bordered-div-padding space-y-6 border-t">
+        <div className="bordered-div-padding space-y-6 border-[#31a2d8] border-x border-t">
           <h3 className="font-weight-display leading-snug tracking-tighter md:text-xl">
             Community engagement
           </h3>
@@ -217,13 +139,13 @@ export function RoadmapSection() {
             Join the conversation on:
           </p>
           <div className="flex gap-3 md:gap-6">
-            <a href={EXTERNAL_LINKS.GITHUB} className="">
+            <a href={SITE_METADATA.github.discussions_link} className="">
               <Button size="sm" variant="default" className="">
                 <FaGithub className="size-5" />
                 Github Discussions
               </Button>
             </a>
-            <a href={EXTERNAL_LINKS.DISCORD} className="">
+            <a href={SITE_METADATA.discord.invitation_link} className="">
               <Button size="sm" variant="outline" className="">
                 <FaDiscord className="size-5" />
                 Discord
@@ -267,7 +189,7 @@ function Item({ item, className }: { item: RoadmapItem; className?: string }) {
             ) : (
               <ClockFading className="size-5" />
             )}
-            <span className="text-sm font-medium">{item.date}</span>
+            <span className="text-sm font-medium">{item.date} ago</span>
           </div>
         </div>
         <h2 className="font-weight-display mt-4 leading-snug tracking-tighter md:text-xl">
@@ -293,7 +215,7 @@ function Item({ item, className }: { item: RoadmapItem; className?: string }) {
             </span>
           </div>
         )}
-        <a href={EXTERNAL_LINKS.GITHUB}>
+        <a href={SITE_METADATA.github.repository_link}>
           <FaGithub className="size-5" />
         </a>
       </div>

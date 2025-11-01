@@ -1,20 +1,14 @@
-import { Images, Layers, ToggleLeft, Users2 } from 'lucide-react';
+import { ShieldCheck, MemoryStick, BookOpenCheck, Telescope } from 'lucide-react';
 
 import { PlusSigns } from '@/components/icons/plus-signs';
 import { cn } from '@/lib/utils';
 const features = [
   {
-    icon: Layers,
-    title: (
-      <>
-        Schema
-        <br />
-        Builder
-      </>
-    ),
-    description: 'Design content structures your way.',
+    icon: MemoryStick,
+    title: 'Minimal Hardware Requirements',
+    description: 'Compact by design.',
     subDescription:
-      'Scalar CMS gives you full control over content with a streamlined, API-first experience — perfect for teams who want speed without sacrificing flexibility.',
+      'Amaru uses very little resources (<1GiB RAM) and can run under constrained environments. In particular, Amaru runs on 86_64 or aarch_64 alike. Some parts such as the ledger can also run natively on RISC-V architectures.',
     className: '!pb-0',
     images: [
       {
@@ -26,11 +20,11 @@ const features = [
     ],
   },
   {
-    icon: Users2,
-    title: 'Real Time Collaboration',
-    description: 'Built for content teams.',
+    icon: Telescope,
+    title: 'Industry-grade Observability',
+    description: 'Embracing Open Telemetry.',
     subDescription:
-      'Draft, review, and publish content with confidence. Autosave, rich text editing, role-based permissions, and revision history come standard.',
+      'With Open Telemetry as a first-class choice for observability, Amaru delivers traces, logs and metrics through one powerful framework that integrates with the industry giants (Grafana, Prometheus, ...).',
     className: '!pb-0',
     images: [
       {
@@ -39,55 +33,39 @@ const features = [
         width: 620,
         height: 108,
       },
-      {
-        src: '/images/landing/feature-2-2.webp',
-        alt: 'Real Time Collaboration',
-        width: 620,
-        height: 108,
-      },
-      {
-        src: '/images/landing/feature-2-3.webp',
-        alt: 'Real Time Collaboration',
-        width: 620,
-        height: 108,
-      },
     ],
   },
   {
-    icon: Images,
-    title: 'Asset Management',
-    description: 'Organize your media like a pro.',
+    icon: ShieldCheck,
+    title: 'High-Assurance & Robustness',
+    description: 'No compromise on security.',
     subDescription:
-      'Upload, crop, tag, and reuse images, videos, and docs with our sleek asset manager. Automatically optimizes files and handles CDN delivery.',
+      'Amaru\'s development includes a variety of testing techniques. From conformance tests with the Haskell node, to deterministic simulations and property-based testing. Alternative doesn\'t mean sloppy.',
   },
   {
-    icon: ToggleLeft,
-    title: 'Granular Permissions',
-    description: 'Control who does what.',
+    icon: BookOpenCheck,
+    title: 'Unparalleled Transparency',
+    description: 'Built in Open Source.',
     subDescription:
-      'Create roles for editors, developers, and guests with precision. Lock down fields, models, or even specific actions.',
+      'Not only is Amaru built fully in Open Source through the effort of multiple organizations; but it is also funded via the Cardano treasury using a transparent and auditable framework.',
   },
 ];
 
 export function Features() {
   return (
     <section className="container">
-      <div className="grid grid-cols-1 border border-t-0 md:grid-cols-2">
+      <div className="grid grid-cols-1 border border-t-0 border-[#30bcc2] md:grid-cols-2">
         {features.map((feature, index) => (
           <div
             key={index}
             className={cn(
               'bordered-div-padding relative space-y-8',
-              index == 0 && 'border-b md:border-e',
-              index == 1 && 'border-b md:border-b-0',
-              index == 3 && 'border-t md:border-s',
+              index == 0 && 'border-b md:border-e border-[#30bcc2]',
+              index == 1 && 'border-b md:border-b-0 border-[#30bcc2]',
+              index == 3 && 'border-t md:border-s border-[#30bcc2]',
               feature.className,
             )}
           >
-            {index === 0 && (
-              // Height is 100% + 2px to account for parent border not being included in the calculation
-              <PlusSigns className="absolute inset-0 -mt-0.25 hidden !h-[calc(100%+2px)] -translate-x-full border-y md:block" />
-            )}
             <div className="space-y-4 md:space-y-6">
               <div className="space-y-4">
                 <h2 className="text-muted-foreground flex items-center gap-2 text-sm leading-snug font-medium md:text-base">

@@ -1,8 +1,9 @@
 'use client';
 
 import { ArrowRight } from 'lucide-react';
-import { FaDiscord } from 'react-icons/fa6';
+import { FaDiscord, FaDownload } from 'react-icons/fa6';
 
+import { SITE_METADATA } from '@/consts';
 import { Button } from '@/components/ui/button';
 import { MovingBorder } from '@/components/ui/moving-border';
 import { cn } from '@/lib/utils';
@@ -11,12 +12,13 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="container">
-        <div className="bordered-div-padding relative flex flex-col items-center gap-8 border-x text-center md:gap-10 lg:gap-16 lg:!py-25">
+        <div className="bordered-div-padding relative flex flex-col items-center gap-8 border-x border-x-[#30e2a3] text-center md:gap-10 lg:gap-16 lg:!py-25 bg-[url(images/landing/hero-alt.webp)]">
           {/* Main Heading */}
           <div className="max-w-4xl space-y-6 md:space-y-8 lg:space-y-12">
             {/* Beta Banner */}
             <a
-              href="#"
+              href="https://summit.cardano.org/"
+              target="_blank"
               className="relative inline-flex items-center overflow-hidden rounded-sm p-[1px]"
             >
               <MovingBorder duration={4000}>
@@ -31,28 +33,32 @@ export function Hero() {
                 size="sm"
                 className="relative border-none"
               >
-                Public beta is starting next week
+                Meet us at the Cardano Summit :: Nov 12-13
                 <ArrowRight className="ml-1" />
               </Button>
             </a>
-            <h1 className="font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl">
-              Fast, flexible, and{' '}
-              <span className="block">developer-first CMS.</span>
+            <h1 className="text-white drop-shadow-md font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl">
+              An Open Source Cardano client{' '}
+              <span className="block">written in Rust.</span>
             </h1>
-            <p className="text-muted-foreground mx-auto max-w-[700px] text-sm leading-relaxed md:text-lg lg:text-xl">
-              Scalar CMS gives you full control over content with a streamlined,
-              API-first experience—perfect for teams who want speed without
-              sacrificing flexibility.
+            <p className="bg-black/20 p-4 rounded backdrop-blur-[1px] text-gray-100 mx-auto max-w-[700px] text-sm leading-relaxed md:text-lg lg:text-xl">
+              Amaru is an open-source project implementing a new fully interoperable block-producing node for Cardano. It aims to improve the network's overall accessibility and robustness without compromising its safety and security.
+            </p>
+            <p className="bg-black/20 p-4 rounded backdrop-blur-[1px] text-gray-100 mx-auto max-w-[700px] text-sm leading-relaxed md:text-lg lg:text-xl">
+              It provides another perspective and solution for stake pool operators and developers alike, prioritizing a modular approach, a seamless user experience, and low hardware requirements.
             </p>
           </div>
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
             <Button asChild>
-              <a href="#">Start Free Trial</a>
+              <a href="/downloads">
+                <FaDownload className="size-5" />
+                Download
+              </a>
             </Button>
             <Button asChild variant="outline">
-              <a href="#">
+              <a href={SITE_METADATA.discord.invitation_link} target="_blank">
                 <FaDiscord className="size-5" />
                 Community
               </a>
@@ -72,7 +78,7 @@ export function Hero() {
         </div>
       </div>
       <div className="container">
-        <div className="bordered-div-padding flex items-center justify-center border">
+        <div className="bordered-div-padding border-x-[#30d0b1] border-t-[#30d0b1] border-b-[#30bcc2] flex items-center justify-center border">
           <img
             src="/images/landing/hero.webp"
             alt="Hero Image"

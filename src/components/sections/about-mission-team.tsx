@@ -188,9 +188,9 @@ function displayTeamMember(member) {
 export function AboutMissionTeam() {
   return (
     <section className="container">
-      <div className="grid grid-cols-1 divide-y border border-t-0 md:grid-cols-2 md:divide-x md:divide-y-0">
+      <div className="grid grid-cols-1 divide-y border border-[#30bcc2] border-t-0 md:grid-cols-2 md:divide-x md:divide-y-0">
         {/* Mission Section */}
-        <div className="bordered-div-padding space-y-8">
+        <div className="bordered-div-padding space-y-8 border-[#30bcc2]">
           <div className="space-y-4 md:space-y-6">
             <h2 className="text-muted-foreground flex items-center gap-2 text-sm leading-snug font-medium md:text-base">
               <Heart className="size-5" />

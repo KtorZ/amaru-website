@@ -118,20 +118,20 @@ const Footer = () => {
 
   // Prevent hydration mismatch by using a consistent theme class until mounted
   // Footer is in light mode when dark theme is applied (inverted behavior)
-  const themeClass =
-    mounted && theme === 'dark'
-      ? 'light bg-foreground text-background [&_*]:border-border/30'
-      : 'dark bg-background text-foreground';
+  // const themeClass =
+  //   mounted && theme === 'dark'
+  //     ? 'light bg-foreground text-background [&_*]:border-border/30'
+  //     : 'dark bg-background text-foreground';
 
   // Logo should be inverted when footer has light background (dark theme)
   // and not inverted when footer has dark background (light theme)
-  const logoWordmarkClass = cn(
-    'w-[min(100%,400px)] translate-y-1/4 md:translate-y-1/3 md:h-32 md:w-full lg:h-73 opacity-10',
-    mounted && theme === 'dark' ? 'invert-0' : 'invert',
-  );
+  // const logoWordmarkClass = cn(
+  //   'w-[min(100%,400px)] translate-y-1/4 md:translate-y-1/3 md:h-32 md:w-full lg:h-73 opacity-10',
+  //   mounted && theme === 'dark' ? 'invert-0' : 'invert',
+  // );
 
   return (
-    <footer className={cn('overflow-hidden', themeClass)}>
+    <footer className={cn('overflow-hidden')}>
       {/* Pricing Section */}
       <div className="container">
         {/*
@@ -202,7 +202,7 @@ const Footer = () => {
         */}
 
         {/* Social and Status Section */}
-        <div className="flex flex-col justify-between border-x border-b md:flex-row">
+        <div className="flex flex-col justify-between border-x md:flex-row border-[#318fe8]">
           <div className="bordered-div-padding flex items-center space-x-3">
             <a
               href={SITE_METADATA.discord.invitation_link}
@@ -233,17 +233,12 @@ const Footer = () => {
             </a>
           </div>
           <div className="bordered-div-padding flex items-center border-t text-[#00A656] md:border-t-0">
-            <span
-              className={cn(
-                'me-3 h-2 w-2 animate-pulse rounded-full bg-[#00A656]',
-              )}
-            ></span>
-            <span className="font-medium">All systems operational</span>
+            <img width="100" src="/layout/pragma-logo.png"></img>
           </div>
         </div>
 
         {/* Legal Links Section */}
-        <div className="bordered-div-padding text-muted-foreground flex items-center justify-center space-x-6 border-x border-b text-sm">
+        <div className="bordered-div-padding text-muted-foreground flex items-center justify-center space-x-6 border-x text-sm border-[#318fe8]">
           <a
             href="/privacy-policy"
             className="hover:text-foreground transition-opacity hover:opacity-80"

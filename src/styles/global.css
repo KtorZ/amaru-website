@@ -51,6 +51,7 @@
   --radius-xl: calc(var(--radius) + 4px);
   --animate-marquee: marquee var(--duration) infinite linear;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+
   @keyframes marquee {
     from {
       transform: translateX(0);
@@ -98,7 +99,7 @@
   --popover-foreground: oklch(0.18 0 0);
   --primary: oklch(0.18 0 0);
   --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.57 0.2328 264.07);
+  --secondary: #30d0b1;
   --secondary-foreground: oklch(0.99 0 0);
   --muted: oklch(0.9 0 0);
   --muted-foreground: oklch(0.6 0 0);
@@ -123,6 +124,8 @@
   --sidebar-accent-foreground: oklch(0.99 0 0);
   --sidebar-border: oklch(0.89 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  --logo-invert: 0;
 }
 
 .dark {
@@ -134,7 +137,7 @@
   --popover-foreground: oklch(0.99 0 0);
   --primary: oklch(0.99 0 0);
   --primary-foreground: oklch(0.09 0 0);
-  --secondary: oklch(0.57 0.2328 264.07);
+  --secondary: #30d0b1;
   --secondary-foreground: oklch(0.99 0 0);
   --muted: oklch(0.2 0 0);
   --muted-foreground: oklch(0.6 0 0);
@@ -159,6 +162,8 @@
   --sidebar-accent-foreground: oklch(0.95 0 0);
   --sidebar-border: oklch(0.11 0 0);
   --sidebar-ring: oklch(0.292 0 0);
+
+  --logo-invert: 1;
 }
 
 @layer base {

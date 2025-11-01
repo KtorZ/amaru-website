@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import Edrs from '@/components/sections/edrs';
+import { SITE_TITLE, SITE_DESCRIPTION } from '@/consts';
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+
+const edrs = (await getCollection('edrs'))
+  .sort((a, b) => b.id.localeCompare(b.id))
+  .map((edr) => {
+    const decisionIndex = edr.body.indexOf("## Decision");
+
+    edr.description = edr.data.description ?? edr.body
+      .slice(decisionIndex)
+      .replace(/## Decision.*\n?/g, "")
+      .replace(/<[^>]+>/g, "")
+      .slice(0, 150) + "…";
+
+    return edr;
+  });
+
+---
+
+<DefaultLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <Edrs edrs={edrs} client:load />
+</DefaultLayout>

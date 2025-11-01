@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { ChevronDown } from 'lucide-react';
 
+import { SITE_METADATA } from '@/consts';
 import { Meteors } from '@/components/magicui/meteors';
 import {
   Accordion,
@@ -21,16 +22,14 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 type Category =
-  | 'Developers'
-  | 'Content Editing & Workflow'
-  | 'Cloud & Hosting'
-  | 'Community & Support';
+  | 'Developers & SPOs'
+  | 'Cardano & Community'
+  | 'Treasury & Funding';
 
 const categories: Category[] = [
-  'Developers',
-  'Content Editing & Workflow',
-  'Cloud & Hosting',
-  'Community & Support',
+  'Developers & SPOs',
+  'Cardano & Community',
+  'Treasury & Funding'
 ];
 
 type FAQ = {
@@ -39,71 +38,84 @@ type FAQ = {
 };
 
 const faqs: Record<Category, FAQ[]> = {
-  Developers: [
+  'Developers & SPOs': [
     {
-      question: 'How do I install Scalar CMS in my project?',
+      question: 'What is Amaru?',
+      answer: 'Amaru is a Cardano node implementation written in Rust, designed to be modular, resource-efficient, and fully compatible with the Cardano protocol. It re-implements the core components of the existing Haskell node — ledger, consensus, networking — with a focus on memory safety, observability, and maintainability.'
+    },
+    {
+      question: 'How is Amaru architectured?',
       answer: (
         <>
-          You can install Scalar with a single CLI command. It supports popular
-          frameworks like Next.js, Nuxt, SvelteKit, and more. Use our official
-          SDK or connect directly to the GraphQL API. See the{' '}
-          <a href="#" className="text-primary underline">
-            Quickstart Guide
-          </a>{' '}
-          for full details.
+          <p>Amaru follows a layered and modular architecture, with separate layers for:</p>
+          <ul>
+            <li>• Networking (P2P protocol, relay, gossip)</li>
+            <li>• Consensus (Ouroboros implementation)</li>
+            <li>• Ledger (Cardano ledger rules and state transitions)</li>
+            <li>• Plutus (Smart contracts virtual machine)</li>
+            <li>• Storage (RocksDB-backed, designed for incremental sync and efficient pruning)</li>
+            <li>• Observability (structured JSON logs and OpenTelemetry tracing)</li>
+          </ul>
+          <p>Each subsystem comes also as a Rust library, providing clear interfaces and making Amaru a toolkit as much as a node.</p>
         </>
       ),
     },
     {
-      question: 'Is Scalar open source?',
-      answer:
-        'Yes, Scalar is fully open source under the MIT license. You can view, modify, and contribute to the codebase on GitHub. Our cloud offering provides additional enterprise features, but the core CMS is free to use.',
+      question: 'What makes Amaru different from the existing Haskell Cardano node?',
+      answer: (
+        <>
+          <p>Key differences include:</p>
+          <ul>
+            <li>• Hardware requirements: Focuses on small resource usages.</li>
+            <li>• User experience: Easier onboarding for developers and ops alike.</li>
+            <li>• Observability: First-class tracing and JSON logging via OpenTelemetry.</li>
+            <li>• Portability: Targets a variety of platforms and archs (e.g., ARM, RISC-V, WASM).</li>
+            <li>• Modularity: Components (e.g., ledger, consensus) can evolve independently.</li>
+          </ul>
+        </>
+      ),
     },
     {
-      question: 'What API types does Scalar support?',
-      answer:
-        'Scalar provides both GraphQL and REST APIs. The GraphQL API offers a flexible query language with strong typing, while the REST API provides simple HTTP endpoints for common operations. Both APIs are fully documented with SDKs available in multiple languages.',
-    },
-    {
-      question: 'Can I define content models with code?',
-      answer:
-        'Yes, Scalar supports code-first content modeling. You can define your schemas using TypeScript, allowing for version control and type safety. This approach works well with CI/CD pipelines and makes it easy to maintain consistent content structures across environments.',
-    },
-  ],
-  'Content Editing & Workflow': [
-    {
-      question: 'Can I create custom content workflows?',
-      answer:
-        'Yes, Scalar allows you to define custom workflows for content creation, review, and publishing. You can set up multiple stages with granular permissions for different team members.',
-    },
-    {
-      question: 'Does Scalar support real-time collaboration?',
-      answer:
-        'Yes, our Cloud plan includes real-time collaboration features, allowing multiple team members to work on content simultaneously with live updates and conflict resolution.',
+      question: 'When will one be able to run Amaru?',
+      answer: 'While few parts are still in the making and we definitely don\'t recommend using Amaru as your sole block producer, we are *already* looking for pioneer willing to try out Amaru and help us iron out the edges.',
     },
   ],
-  'Cloud & Hosting': [
+  'Cardano & Community': [
     {
-      question: 'What are the differences between self-hosted and cloud?',
-      answer:
-        'The self-hosted version gives you complete control over your infrastructure but requires you to manage hosting, backups, and scaling. The Cloud version is fully managed with additional features like real-time collaboration, role-based access controls, and built-in CDN.',
+      question: 'Why does Cardano need another node implementation?',
+      answer: 'Having multiple node implementations increases resilience and decentralization. If one node (e.g., the Haskell one) has a critical bug, the network remains operational thanks to protocol diversity. It also prevents ecosystem dependence on a single vendor or codebase.',
     },
     {
-      question: 'Can I migrate from self-hosted to cloud later?',
-      answer:
-        'Yes, we provide migration tools to easily transfer your content and settings from a self-hosted Scalar instance to our cloud platform.',
+      question: 'Who is building Amaru?',
+      answer: 'Amaru is developed by PRAGMA, a consortium of Cardano ecosystem builders that includes independent engineering teams and ecosystem contributors. The Cardano Foundation and Sundae Labs are the two primary contributors to Amaru.',
     },
+    {
+      question: 'How can I follow progress or get involved?',
+      answer: (
+        <>
+          <p>You can:</p>
+          <ul>
+            <li>• Star and follow the <a href={SITE_METADATA.github.repository_link} target="_blank">GitHub repository</a></li>
+            <li>• Join discussions on <a href={SITE_METADATA.discord.invitation_link}>Discord</a></li>
+            <li>• Follow the project on <a href={SITE_METADATA.twitter.profile_link}>Twitter/X</a></li>
+            <li>• Attend the bi-monthly demo on Discord</li>
+          </ul>
+        </>
+      ),
+    }
   ],
-  'Community & Support': [
+  'Treasury & Funding': [
     {
-      question: 'Where can I get help with Scalar?',
-      answer:
-        'For the open-source version, we have an active community on Discord and GitHub. Cloud customers receive email support and access to our knowledge base. Enterprise plans include dedicated support channels and SLAs.',
+      question: 'How is Amaru funded?',
+      answer: 'Amaru\'s funding comes from multiple sources. Either directly by specific organisations (..., Cardano Foundation, Sundae Labs). Via Catalyst, through specific missions. Amaru is also one of the first infrastructure projects to be funded through Cardano’s on-chain treasury mechanism. It has received community approval via governance actions to withdraw budget allocations aimed at core infrastructure development.',
     },
     {
-      question: 'How can I contribute to Scalar?',
-      answer:
-        'We welcome contributions! You can contribute code, report bugs, suggest features, or help improve our documentation. Check our GitHub repository for contribution guidelines.',
+      question: 'How are funds managed and reported?',
+      answer: (
+        <>
+          <p>The project commits to transparent milestone-based reporting, including public budget recaps, code milestones, and development progress visible on-chain and via GitHub activity. Community updates are periodically published <a href="https://github.com/pragma-org/amaru-treasury.git" target="_blank">on Github</a>.</p>
+        </>
+      ),
     },
   ],
 };
@@ -114,9 +126,7 @@ export function FAQSection() {
   return (
     <section className="overflow-hidden">
       <div className="container divide-y">
-        <div className="hidden border-x border-b-0 p-7.5 md:block" />
-
-        <div className="bordered-div-padding border-x">
+        <div className="bordered-div-padding border-[#30e2a3] border-x">
           <h1 className="font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl">
             FAQs
           </h1>
@@ -139,16 +149,7 @@ export function FAQSection() {
           </div>
         </div>
 
-        <div className="bordered-div-padding relative hidden border-x md:block">
-          <div className="absolute left-full h-[150%] w-[50vw] -translate-y-[90%] overflow-hidden border-y">
-            <Meteors
-              number={1000}
-              angle={65}
-              maxDuration={20}
-              minDuration={5}
-              className="opacity-10 [&>div]:opacity-10"
-            />
-          </div>
+        <div className="bordered-div-padding relative hidden border-[#30d0b1] border-x md:block">
           <Tabs
             value={activeTab}
             onValueChange={(value) => setActiveTab(value as Category)}
@@ -164,10 +165,10 @@ export function FAQSection() {
           </Tabs>
         </div>
 
-        <div className="border-x">
+        <div className="border-x border-[#30bcc2]">
           <Accordion type="single" collapsible>
             {faqs[activeTab].map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
+              <AccordionItem key={index} value={`item-${index}`} className="border-b-[#30bcc2]">
                 <AccordionTrigger className="bordered-div-padding font-weight-display flex w-full items-center justify-between !pb-4 text-base hover:no-underline md:!pb-6 md:text-xl [&>svg]:hidden [&[data-state=open]_svg]:rotate-180">
                   <span>{faq.question}</span>
                   <div className="bg-card flex size-8 items-center justify-center rounded-sm border">
@@ -181,7 +182,7 @@ export function FAQSection() {
             ))}
           </Accordion>
         </div>
-        <div className="hidden border-x p-20 md:block" />
+        <div className="hidden border-x border-[#31a2d8] p-10 md:block" />
       </div>
     </section>
   );

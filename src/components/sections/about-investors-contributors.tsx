@@ -11,54 +11,9 @@ import { SITE_METADATA } from '../../consts.ts';
 //     company: 'Snap',
 //   },
 // ];
+type Props = { contributors: Array };
 
-const GITHUB_REPOS =
-  [ 'pragma-org/amaru'
-  , 'jeluard/amaru-doctor'
-  , 'pragma-org/uplc'
-  , 'pragma-org/amaru-treasury'
-  , 'SundaeSwap-finance/nawi'
-  ];
-const API_URL = (repo) => `https://api.github.com/repos/${repo}/contributors`;
-const LS_KEY = `github:contributors`;
-const ONE_DAY_MS = 24 * 60 * 60 * 1000;
-const BOTS = ["actions-user", "Copilot"];
-
-async function fetchContributors() {
-  const opts = { cache: "no-store", headers: { Accept: "application/vnd.github+json" } };
-  if (process.env.GITHUB_API_TOKEN) {
-    opts.heaaders.Authoriation = `Bearer ${process.env.GITHUB_API_TOKEN}`;
-  }
-
-  const res = await Promise.all(GITHUB_REPOS.map(repo => fetch(API_URL(repo), opts)));
-
-  if (res.some(r => !r.ok)) { throw new Error(`GitHub API ${res.status}`); }
-
-  const data = await Promise.all(res.map(r => r.json()));
-
-  return Object.values(data.flatMap(x => x).reduce((acc, entry) => {
-    if (BOTS.includes(entry.login)) { return acc; }
-
-    if (!acc[entry.login]) {
-      acc[entry.login] = {
-        username: entry.login,
-        commits: entry.contributions,
-        avatar: entry.avatar_url,
-        url: entry.html_url,
-      };
-    } else {
-      acc[entry.login].commits += entry.contributions;
-    }
-
-    return acc;
-  }, {})).sort((a, b) => b.commits - a.commits);
-}
-
-const contributors = await fetchContributors();
-
-export function AboutInvestorsContributors() {
-  console.log(contributors);
-
+export function AboutInvestorsContributors({ contributors }: Props) {
   return (
     <>
       {/* Investors Section */}
@@ -100,7 +55,7 @@ export function AboutInvestorsContributors() {
 
       {/* Contributors Section */}
       <section className="container">
-        <div className="bordered-div-padding border border-t-0">
+        <div className="bordered-div-padding border border-[#31a2d8] border-t-0">
           <div className="space-y-6 md:space-y-8 lg:space-y-10">
             <h2 className="text-muted-foreground flex items-center gap-2 text-sm leading-snug font-medium md:text-base">
               <HeartHandshake className="size-5" />
