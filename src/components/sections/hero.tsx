@@ -12,7 +12,7 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="container">
-        <div className="bordered-div-padding relative flex flex-col items-center gap-8 border-x border-x-[#30e2a3] bg-[url(images/landing/hero-alt.webp)] text-center md:gap-10 lg:gap-16 lg:!py-25">
+        <div className="bordered-div-padding relative flex flex-col items-center gap-8 border-x border-x-[#30e2a3] bg-[url(./images/landing/hero-alt.webp)] text-center md:gap-10 lg:gap-16 lg:!py-25">
           {/* Main Heading */}
           <div className="max-w-4xl space-y-6 md:space-y-8 lg:space-y-12">
             {/* Beta Banner */}
