@@ -1,0 +1,744 @@
+---
+title: Deployment
+description: Deploy your Scalar application to production
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Platform Guides
+
+<CardGrid>
+  <Card
+    title="Vercel"
+    description="Deploy Next.js apps with zero configuration"
+    href="#vercel"
+  />
+  <Card
+    title="Netlify"
+    description="Static site deployment with edge functions"
+    href="#netlify"
+  />
+  <Card
+    title="Railway"
+    description="Simple deployment with built-in database"
+    href="#railway"
+  />
+  <Card
+    title="DigitalOcean"
+    description="VPS deployment with full control"
+    href="#digitalocean"
+  />
+  <Card
+    title="AWS"
+    description="Enterprise-grade cloud deployment"
+    href="#aws"
+  />
+  <Card
+    title="Docker"
+    description="Containerized deployment anywhere"
+    href="#docker"
+  />
+</CardGrid>
+
+## Pre-deployment Checklist
+
+Before deploying to production, ensure you have:
+
+- [ ] Set up a production database
+- [ ] Configured environment variables
+- [ ] Set up file storage (if using file uploads)
+- [ ] Configured email service (if using auth)
+- [ ] Set up SSL certificate
+- [ ] Configured domain and DNS
+- [ ] Set up monitoring and logging
+- [ ] Tested the application thoroughly
+
+## Vercel
+
+Perfect for Next.js applications with built-in optimizations.
+
+<Steps>
+
+1. ### Connect your repository
+
+   1. Go to [vercel.com](https://vercel.com) and sign in
+   2. Click "New Project" and import your repository
+   3. Vercel will automatically detect it's a Next.js project
+
+2. ### Configure environment variables
+
+   Add these environment variables in the Vercel dashboard:
+
+   ```bash
+   DATABASE_URL="your-production-database-url"
+   SCALAR_SECRET="your-production-secret"
+   NEXTAUTH_URL="https://your-domain.com"
+   NEXTAUTH_SECRET="your-nextauth-secret"
+   ```
+
+3. ### Configure build settings
+
+   Create a `vercel.json` file:
+
+   ```json title="vercel.json"
+   {
+     "buildCommand": "npm run build",
+     "outputDirectory": ".next",
+     "installCommand": "npm install",
+     "functions": {
+       "app/api/**": {
+         "maxDuration": 30
+       }
+     },
+     "crons": [
+       {
+         "path": "/api/cron/cleanup",
+         "schedule": "0 2 * * *"
+       }
+     ]
+   }
+   ```
+
+4. ### Deploy
+
+   ```bash
+   # Deploy via CLI
+   npm install -g vercel
+   vercel --prod
+
+   # Or push to main branch for automatic deployment
+   git push origin main
+   ```
+
+</Steps>
+
+<Aside type="tip">
+  Vercel provides automatic SSL, global CDN, and serverless functions out of the
+  box.
+</Aside>
+
+## Netlify
+
+Great for static sites and JAMstack applications.
+
+<Steps>
+
+1. ### Connect repository
+
+   1. Go to [netlify.com](https://netlify.com) and sign in
+   2. Click "New site from Git" and connect your repository
+
+2. ### Configure build settings
+
+   ```toml title="netlify.toml"
+   [build]
+     command = "npm run build"
+     publish = "dist"
+
+   [build.environment]
+     NODE_VERSION = "18"
+
+   [[redirects]]
+     from = "/api/*"
+     to = "/.netlify/functions/:splat"
+     status = 200
+
+   [[headers]]
+     for = "/*"
+     [headers.values]
+       X-Frame-Options = "DENY"
+       X-XSS-Protection = "1; mode=block"
+       X-Content-Type-Options = "nosniff"
+   ```
+
+3. ### Set up Netlify Functions
+
+   ```javascript title="netlify/functions/api.js"
+   import { scalar } from '../../lib/scalar';
+
+   exports.handler = async (event, context) => {
+     // Handle API requests
+     const path = event.path.replace('/.netlify/functions/api', '');
+
+     return scalar.handleRequest({
+       method: event.httpMethod,
+       path,
+       headers: event.headers,
+       body: event.body,
+     });
+   };
+   ```
+
+</Steps>
+
+## Railway
+
+Simple deployment with managed databases.
+
+<Steps>
+
+1. ### Install Railway CLI
+
+   ```bash
+   npm install -g @railway/cli
+   railway login
+   ```
+
+2. ### Initialize project
+
+   ```bash
+   railway init
+   railway add postgresql
+   ```
+
+3. ### Configure environment
+
+   ```bash
+   # Railway automatically provides DATABASE_URL
+   railway variables set SCALAR_SECRET=your-secret-key
+   railway variables set NODE_ENV=production
+   ```
+
+4. ### Deploy
+
+   ```bash
+   railway up
+   ```
+
+</Steps>
+
+## DigitalOcean
+
+Deploy on a VPS with full control.
+
+<Steps>
+
+1. ### Create a Droplet
+
+   1. Create a new Ubuntu 22.04 droplet
+   2. Connect via SSH
+   3. Update the system:
+
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   ```
+
+2. ### Install dependencies
+
+   ```bash
+   # Install Node.js
+   curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+   sudo apt-get install -y nodejs
+
+   # Install PM2
+   sudo npm install -g pm2
+
+   # Install Nginx
+   sudo apt install nginx -y
+
+   # Install PostgreSQL
+   sudo apt install postgresql postgresql-contrib -y
+   ```
+
+3. ### Configure PostgreSQL
+
+   ```bash
+   sudo -u postgres psql
+
+   # In PostgreSQL shell:
+   CREATE DATABASE scalar_production;
+   CREATE USER scalar_user WITH PASSWORD 'secure_password';
+   GRANT ALL PRIVILEGES ON DATABASE scalar_production TO scalar_user;
+   \q
+   ```
+
+4. ### Deploy application
+
+   ```bash
+   # Clone repository
+   git clone https://github.com/yourusername/your-scalar-app.git
+   cd your-scalar-app
+
+   # Install dependencies
+   npm install
+
+   # Set environment variables
+   cat << EOF > .env
+   DATABASE_URL="postgresql://scalar_user:secure_password@localhost:5432/scalar_production"
+   SCALAR_SECRET="your-production-secret"
+   NODE_ENV="production"
+   PORT=3000
+   EOF
+
+   # Build application
+   npm run build
+
+   # Start with PM2
+   pm2 start ecosystem.config.js
+   pm2 save
+   pm2 startup
+   ```
+
+5. ### Configure Nginx
+
+   ```nginx title="/etc/nginx/sites-available/scalar"
+   server {
+       listen 80;
+       server_name your-domain.com;
+
+       location / {
+           proxy_pass http://localhost:3000;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection 'upgrade';
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+           proxy_cache_bypass $http_upgrade;
+       }
+   }
+   ```
+
+   ```bash
+   # Enable site
+   sudo ln -s /etc/nginx/sites-available/scalar /etc/nginx/sites-enabled/
+   sudo nginx -t
+   sudo systemctl reload nginx
+
+   # Install SSL certificate
+   sudo apt install certbot python3-certbot-nginx -y
+   sudo certbot --nginx -d your-domain.com
+   ```
+
+</Steps>
+
+## AWS
+
+Enterprise deployment with auto-scaling and managed services.
+
+<Steps>
+
+1. ### Set up RDS Database
+
+   1. Go to AWS RDS console
+   2. Create new PostgreSQL database
+   3. Configure security groups to allow connections
+   4. Note the endpoint and credentials
+
+2. ### Create Elastic Beanstalk Application
+
+   ```bash
+   # Install EB CLI
+   pip install awsebcli
+
+   # Initialize application
+   eb init
+   eb create production
+   ```
+
+3. ### Configure environment variables
+
+   ```bash
+   eb setenv \
+     DATABASE_URL="postgresql://username:password@your-rds-endpoint:5432/dbname" \
+     SCALAR_SECRET="your-production-secret" \
+     NODE_ENV="production"
+   ```
+
+4. ### Configure auto-scaling
+
+   ```yaml title=".ebextensions/autoscaling.config"
+   option_settings:
+     aws:autoscaling:asg:
+       MinSize: 2
+       MaxSize: 10
+     aws:autoscaling:trigger:
+       MeasureName: CPUUtilization
+       Unit: Percent
+       UpperThreshold: 70
+       LowerThreshold: 30
+     aws:elasticbeanstalk:environment:
+       LoadBalancerType: application
+   ```
+
+</Steps>
+
+## Docker
+
+Containerized deployment for any platform.
+
+### Dockerfile
+
+```dockerfile title="Dockerfile"
+# Build stage
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Copy source code
+COPY . .
+
+# Build application
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine AS production
+
+WORKDIR /app
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S scalar -u 1001
+
+# Copy built application
+COPY --from=builder --chown=scalar:nodejs /app ./
+
+# Switch to non-root user
+USER scalar
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node healthcheck.js
+
+# Start application
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "server.js"]
+```
+
+### Docker Compose
+
+```yaml title="docker-compose.yml"
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/scalar
+      - SCALAR_SECRET=your-secret-key
+      - NODE_ENV=production
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=scalar
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+```
+
+### Production Configuration
+
+```javascript title="ecosystem.config.js"
+module.exports = {
+  apps: [
+    {
+      name: 'scalar-app',
+      script: './server.js',
+      instances: 'max',
+      exec_mode: 'cluster',
+      env: {
+        NODE_ENV: 'development',
+      },
+      env_production: {
+        NODE_ENV: 'production',
+        PORT: 3000,
+      },
+      error_file: './logs/err.log',
+      out_file: './logs/out.log',
+      log_file: './logs/combined.log',
+      time: true,
+      watch: false,
+      max_memory_restart: '1G',
+      node_args: '--max-old-space-size=1024',
+    },
+  ],
+};
+```
+
+## Environment Variables
+
+### Required Variables
+
+```bash title=".env.production"
+# Database
+DATABASE_URL="postgresql://user:pass@host:5432/db"
+
+# Security
+SCALAR_SECRET="your-very-secure-secret-key-32-chars-min"
+JWT_SECRET="your-jwt-secret-key"
+
+# Application
+NODE_ENV="production"
+PORT=3000
+BASE_URL="https://your-domain.com"
+
+# Authentication (if using)
+NEXTAUTH_URL="https://your-domain.com"
+NEXTAUTH_SECRET="your-nextauth-secret"
+
+# Email (if using)
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT=587
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"
+
+# File Storage (if using AWS S3)
+AWS_ACCESS_KEY_ID="your-access-key"
+AWS_SECRET_ACCESS_KEY="your-secret-key"
+AWS_S3_BUCKET="your-bucket-name"
+AWS_REGION="us-east-1"
+
+# Monitoring (optional)
+SENTRY_DSN="your-sentry-dsn"
+```
+
+## Database Migration
+
+Run migrations in production:
+
+```bash
+# Using the CLI
+npx scalar migrate --env production
+
+# Or programmatically
+npm run db:migrate:prod
+```
+
+## Monitoring and Logging
+
+### Health Check Endpoint
+
+```javascript title="healthcheck.js"
+const http = require('http');
+
+const options = {
+  hostname: 'localhost',
+  port: process.env.PORT || 3000,
+  path: '/api/health',
+  method: 'GET',
+  timeout: 2000,
+};
+
+const req = http.request(options, (res) => {
+  if (res.statusCode === 200) {
+    process.exit(0);
+  } else {
+    process.exit(1);
+  }
+});
+
+req.on('error', () => {
+  process.exit(1);
+});
+
+req.on('timeout', () => {
+  req.destroy();
+  process.exit(1);
+});
+
+req.end();
+```
+
+### Logging Configuration
+
+```javascript title="lib/logger.js"
+const winston = require('winston');
+
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.errors({ stack: true }),
+    winston.format.json(),
+  ),
+  defaultMeta: { service: 'scalar-app' },
+  transports: [
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'logs/combined.log' }),
+  ],
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  logger.add(
+    new winston.transports.Console({
+      format: winston.format.simple(),
+    }),
+  );
+}
+
+module.exports = logger;
+```
+
+## Security Considerations
+
+### SSL/TLS
+
+Always use HTTPS in production:
+
+```nginx title="nginx.conf"
+server {
+    listen 80;
+    server_name your-domain.com;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name your-domain.com;
+
+    ssl_certificate /path/to/certificate.pem;
+    ssl_certificate_key /path/to/private.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512;
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+    add_header Content-Security-Policy "default-src 'self'" always;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+### Rate Limiting
+
+```javascript title="middleware/rate-limit.js"
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+module.exports = limiter;
+```
+
+## Performance Optimization
+
+### Caching
+
+```javascript title="lib/cache.js"
+const Redis = require('redis');
+
+const client = Redis.createClient({
+  url: process.env.REDIS_URL,
+});
+
+client.on('error', (err) => console.log('Redis Client Error', err));
+
+const cache = {
+  async get(key) {
+    try {
+      const value = await client.get(key);
+      return value ? JSON.parse(value) : null;
+    } catch (error) {
+      console.error('Cache get error:', error);
+      return null;
+    }
+  },
+
+  async set(key, value, ttl = 3600) {
+    try {
+      await client.setEx(key, ttl, JSON.stringify(value));
+    } catch (error) {
+      console.error('Cache set error:', error);
+    }
+  },
+
+  async del(key) {
+    try {
+      await client.del(key);
+    } catch (error) {
+      console.error('Cache delete error:', error);
+    }
+  },
+};
+
+module.exports = cache;
+```
+
+<Aside type="caution">
+  Always test your deployment thoroughly in a staging environment before
+  deploying to production.
+</Aside>
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Database Connection Errors**
+
+   - Check DATABASE_URL format
+   - Verify database server is running
+   - Check firewall settings
+
+2. **Build Failures**
+
+   - Clear node_modules and reinstall
+   - Check Node.js version compatibility
+   - Verify all environment variables are set
+
+3. **Performance Issues**
+
+   - Enable caching
+   - Optimize database queries
+   - Use CDN for static assets
+   - Monitor memory usage
+
+4. **SSL Certificate Issues**
+   - Verify certificate validity
+   - Check intermediate certificates
+   - Ensure proper nginx configuration

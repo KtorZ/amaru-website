@@ -1,0 +1,950 @@
+---
+title: Tutorials
+description: Step-by-step tutorials for common scenarios
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Tutorial Categories
+
+<CardGrid>
+  <Card title="Content Management" icon="open-book">
+    Building blogs, portfolios, and content sites
+  </Card>
+  <Card title="E-commerce" icon="setting">
+    Product catalogs and online stores
+  </Card>
+  <Card title="User Management" icon="user">
+    Authentication and user profiles
+  </Card>
+  <Card title="Advanced Features" icon="rocket">
+    Search, analytics, and integrations
+  </Card>
+</CardGrid>
+
+## Content Management
+
+### Building a Multi-Author Blog
+
+Create a blog with multiple authors, categories, and advanced features.
+
+<Steps>
+
+1. ### Set up the content models
+
+   ```typescript title="schema/author.ts"
+   export const author = defineModel({
+     name: 'author',
+     label: 'Author',
+
+     fields: {
+       name: {
+         type: 'text',
+         required: true,
+         label: 'Full Name',
+       },
+
+       email: {
+         type: 'email',
+         required: true,
+         unique: true,
+       },
+
+       bio: {
+         type: 'textarea',
+         label: 'Biography',
+         maxLength: 500,
+       },
+
+       avatar: {
+         type: 'image',
+         label: 'Profile Picture',
+         aspectRatio: '1:1',
+       },
+
+       socialLinks: {
+         type: 'group',
+         label: 'Social Media',
+         fields: {
+           twitter: { type: 'url', label: 'Twitter' },
+           linkedin: { type: 'url', label: 'LinkedIn' },
+           website: { type: 'url', label: 'Website' },
+         },
+       },
+
+       isActive: {
+         type: 'boolean',
+         defaultValue: true,
+         label: 'Active Author',
+       },
+     },
+
+     admin: {
+       listView: {
+         fields: ['name', 'email', 'isActive'],
+       },
+     },
+   });
+   ```
+
+   ```typescript title="schema/category.ts"
+   export const category = defineModel({
+     name: 'category',
+     label: 'Category',
+
+     fields: {
+       name: {
+         type: 'text',
+         required: true,
+         label: 'Category Name',
+       },
+
+       slug: {
+         type: 'slug',
+         source: 'name',
+         required: true,
+         unique: true,
+       },
+
+       description: {
+         type: 'textarea',
+         label: 'Description',
+       },
+
+       color: {
+         type: 'color',
+         label: 'Brand Color',
+         defaultValue: '#3b82f6',
+       },
+
+       parent: {
+         type: 'relationship',
+         model: 'category',
+         label: 'Parent Category',
+       },
+
+       image: {
+         type: 'image',
+         label: 'Category Image',
+       },
+     },
+   });
+   ```
+
+2. ### Create the blog post model
+
+   ```typescript title="schema/blog-post.ts"
+   export const blogPost = defineModel({
+     name: 'blogPost',
+     label: 'Blog Post',
+
+     fields: {
+       title: {
+         type: 'text',
+         required: true,
+         label: 'Title',
+         validation: {
+           minLength: 10,
+           maxLength: 100,
+         },
+       },
+
+       slug: {
+         type: 'slug',
+         source: 'title',
+         required: true,
+         unique: true,
+       },
+
+       excerpt: {
+         type: 'textarea',
+         label: 'Excerpt',
+         maxLength: 200,
+         description: 'Brief summary for previews',
+       },
+
+       content: {
+         type: 'richtext',
+         required: true,
+         label: 'Content',
+         toolbar: [
+           'bold',
+           'italic',
+           'underline',
+           'strikethrough',
+           'heading',
+           'blockquote',
+           'codeBlock',
+           'bulletList',
+           'orderedList',
+           'link',
+           'image',
+           'horizontalRule',
+         ],
+       },
+
+       featuredImage: {
+         type: 'image',
+         label: 'Featured Image',
+         aspectRatio: '16:9',
+       },
+
+       author: {
+         type: 'relationship',
+         model: 'author',
+         required: true,
+         label: 'Author',
+         filter: { isActive: true },
+       },
+
+       categories: {
+         type: 'relationship',
+         model: 'category',
+         multiple: true,
+         label: 'Categories',
+         validation: {
+           minItems: 1,
+           maxItems: 3,
+         },
+       },
+
+       tags: {
+         type: 'array',
+         of: 'text',
+         label: 'Tags',
+         description: 'Keywords for SEO and filtering',
+       },
+
+       status: {
+         type: 'select',
+         options: [
+           { value: 'draft', label: 'Draft' },
+           { value: 'review', label: 'Under Review' },
+           { value: 'published', label: 'Published' },
+           { value: 'archived', label: 'Archived' },
+         ],
+         defaultValue: 'draft',
+         label: 'Status',
+       },
+
+       publishedAt: {
+         type: 'datetime',
+         label: 'Published At',
+         conditional: {
+           when: 'status',
+           is: 'published',
+         },
+       },
+
+       featured: {
+         type: 'boolean',
+         defaultValue: false,
+         label: 'Featured Post',
+       },
+
+       readingTime: {
+         type: 'number',
+         label: 'Reading Time (minutes)',
+         min: 1,
+         computed: true,
+       },
+
+       seo: {
+         type: 'group',
+         label: 'SEO Settings',
+         collapsible: true,
+         fields: {
+           metaTitle: {
+             type: 'text',
+             label: 'Meta Title',
+             maxLength: 60,
+           },
+           metaDescription: {
+             type: 'textarea',
+             label: 'Meta Description',
+             maxLength: 160,
+           },
+           ogImage: {
+             type: 'image',
+             label: 'Social Media Image',
+           },
+           noIndex: {
+             type: 'boolean',
+             label: 'Hide from Search Engines',
+             defaultValue: false,
+           },
+         },
+       },
+     },
+
+     hooks: {
+       beforeSave: async (data) => {
+         // Auto-calculate reading time
+         if (data.content) {
+           const wordsPerMinute = 200;
+           const wordCount = data.content.split(/\s+/).length;
+           data.readingTime = Math.ceil(wordCount / wordsPerMinute);
+         }
+
+         // Auto-generate excerpt if not provided
+         if (!data.excerpt && data.content) {
+           data.excerpt = stripHtml(data.content).substring(0, 160) + '...';
+         }
+
+         // Set published date when status changes to published
+         if (data.status === 'published' && !data.publishedAt) {
+           data.publishedAt = new Date();
+         }
+       },
+
+       afterSave: async (record) => {
+         // Clear cache when post is updated
+         await clearCache(`blog:${record.slug}`);
+
+         // Send notification for new published posts
+         if (record.status === 'published' && record.publishedAt) {
+           await notifySubscribers(record);
+         }
+       },
+     },
+
+     admin: {
+       defaultSort: '-createdAt',
+       searchFields: ['title', 'excerpt', 'content'],
+       filterFields: ['status', 'author', 'categories', 'featured'],
+       listView: {
+         fields: ['title', 'author', 'status', 'publishedAt', 'featured'],
+       },
+     },
+   });
+   ```
+
+3. ### Build the frontend pages
+
+   ```tsx title="app/blog/page.tsx"
+   import { scalar } from '@/lib/scalar';
+   import { BlogCard } from '@/components/blog-card';
+   import { CategoryFilter } from '@/components/category-filter';
+   import { FeaturedPosts } from '@/components/featured-posts';
+   import { Pagination } from '@/components/pagination';
+
+   interface BlogPageProps {
+     searchParams: {
+       page?: string;
+       category?: string;
+       author?: string;
+       tag?: string;
+     };
+   }
+
+   export default async function BlogPage({ searchParams }: BlogPageProps) {
+     const currentPage = parseInt(searchParams.page || '1');
+     const pageSize = 12;
+
+     // Build filter conditions
+     const filter: any = { status: 'published' };
+     if (searchParams.category) {
+       filter['categories.slug'] = searchParams.category;
+     }
+     if (searchParams.author) {
+       filter['author.slug'] = searchParams.author;
+     }
+     if (searchParams.tag) {
+       filter.tags = { $contains: searchParams.tag };
+     }
+
+     // Fetch posts and metadata
+     const [posts, categories, authors, featuredPosts] = await Promise.all([
+       scalar.content.findMany({
+         model: 'blogPost',
+         filter,
+         populate: ['author', 'categories', 'featuredImage'],
+         sort: '-publishedAt',
+         limit: pageSize,
+         offset: (currentPage - 1) * pageSize,
+       }),
+
+       scalar.content.findMany({
+         model: 'category',
+         sort: 'name',
+       }),
+
+       scalar.content.findMany({
+         model: 'author',
+         filter: { isActive: true },
+         sort: 'name',
+       }),
+
+       scalar.content.findMany({
+         model: 'blogPost',
+         filter: { status: 'published', featured: true },
+         populate: ['author', 'categories', 'featuredImage'],
+         sort: '-publishedAt',
+         limit: 3,
+       }),
+     ]);
+
+     return (
+       <div className="container mx-auto px-4 py-8">
+         {currentPage === 1 && featuredPosts.length > 0 && (
+           <FeaturedPosts posts={featuredPosts} />
+         )}
+
+         <div className="flex flex-col gap-8 lg:flex-row">
+           <aside className="lg:w-64">
+             <CategoryFilter
+               categories={categories}
+               authors={authors}
+               selectedCategory={searchParams.category}
+               selectedAuthor={searchParams.author}
+             />
+           </aside>
+
+           <main className="flex-1">
+             <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2">
+               {posts.data.map((post) => (
+                 <BlogCard key={post.id} post={post} />
+               ))}
+             </div>
+
+             {posts.data.length === 0 && (
+               <div className="py-12 text-center">
+                 <p className="text-lg text-gray-500">No posts found</p>
+               </div>
+             )}
+
+             <Pagination
+               currentPage={currentPage}
+               totalPages={Math.ceil(posts.meta.total / pageSize)}
+               baseUrl="/blog"
+             />
+           </main>
+         </div>
+       </div>
+     );
+   }
+   ```
+
+4. ### Add search functionality
+
+   ```tsx title="components/blog-search.tsx"
+   'use client';
+
+   import { useState, useEffect } from 'react';
+   import { useRouter, useSearchParams } from 'next/navigation';
+   import { SearchIcon } from 'lucide-react';
+   import { scalar } from '@/lib/scalar';
+
+   export function BlogSearch() {
+     const router = useRouter();
+     const searchParams = useSearchParams();
+     const [query, setQuery] = useState(searchParams.get('q') || '');
+     const [results, setResults] = useState([]);
+     const [loading, setLoading] = useState(false);
+
+     const handleSearch = async (searchQuery: string) => {
+       if (!searchQuery.trim()) {
+         setResults([]);
+         return;
+       }
+
+       setLoading(true);
+
+       try {
+         const searchResults = await scalar.content.findMany({
+           model: 'blogPost',
+           filter: {
+             status: 'published',
+             $or: [
+               { title: { $contains: searchQuery } },
+               { excerpt: { $contains: searchQuery } },
+               { content: { $contains: searchQuery } },
+               { tags: { $contains: searchQuery } },
+             ],
+           },
+           populate: ['author', 'categories'],
+           limit: 10,
+           sort: '-publishedAt',
+         });
+
+         setResults(searchResults.data);
+       } catch (error) {
+         console.error('Search error:', error);
+       } finally {
+         setLoading(false);
+       }
+     };
+
+     useEffect(() => {
+       const debounced = setTimeout(() => {
+         handleSearch(query);
+       }, 300);
+
+       return () => clearTimeout(debounced);
+     }, [query]);
+
+     return (
+       <div className="relative">
+         <div className="relative">
+           <input
+             type="search"
+             value={query}
+             onChange={(e) => setQuery(e.target.value)}
+             placeholder="Search posts..."
+             className="w-full rounded-lg border py-2 pr-4 pl-10 focus:ring-2 focus:ring-blue-500"
+           />
+           <SearchIcon className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
+         </div>
+
+         {query && results.length > 0 && (
+           <div className="absolute top-full right-0 left-0 z-50 mt-1 rounded-lg border bg-white shadow-lg">
+             {results.map((post) => (
+               <div
+                 key={post.id}
+                 className="cursor-pointer border-b p-3 last:border-b-0 hover:bg-gray-50"
+                 onClick={() => router.push(`/blog/${post.slug}`)}
+               >
+                 <h4 className="text-sm font-medium">{post.title}</h4>
+                 <p className="mt-1 text-xs text-gray-500">
+                   by {post.author.name} • {post.categories[0]?.name}
+                 </p>
+               </div>
+             ))}
+           </div>
+         )}
+
+         {loading && (
+           <div className="absolute top-full right-0 left-0 mt-1 rounded-lg border bg-white p-3 shadow-lg">
+             <p className="text-sm text-gray-500">Searching...</p>
+           </div>
+         )}
+       </div>
+     );
+   }
+   ```
+
+</Steps>
+
+### Building a Portfolio Site
+
+Create a portfolio to showcase projects and skills.
+
+<Steps>
+
+1. ### Define the project model
+
+   ```typescript title="schema/project.ts"
+   export const project = defineModel({
+     name: 'project',
+     label: 'Project',
+
+     fields: {
+       title: {
+         type: 'text',
+         required: true,
+         label: 'Project Title',
+       },
+
+       slug: {
+         type: 'slug',
+         source: 'title',
+         required: true,
+         unique: true,
+       },
+
+       description: {
+         type: 'richtext',
+         required: true,
+         label: 'Project Description',
+       },
+
+       summary: {
+         type: 'textarea',
+         label: 'Short Summary',
+         maxLength: 200,
+       },
+
+       images: {
+         type: 'array',
+         of: 'image',
+         label: 'Project Screenshots',
+         minItems: 1,
+         maxItems: 10,
+       },
+
+       technologies: {
+         type: 'relationship',
+         model: 'technology',
+         multiple: true,
+         label: 'Technologies Used',
+       },
+
+       links: {
+         type: 'group',
+         label: 'Project Links',
+         fields: {
+           live: { type: 'url', label: 'Live Demo' },
+           github: { type: 'url', label: 'GitHub Repository' },
+           figma: { type: 'url', label: 'Design Files' },
+         },
+       },
+
+       status: {
+         type: 'select',
+         options: [
+           { value: 'completed', label: 'Completed' },
+           { value: 'in-progress', label: 'In Progress' },
+           { value: 'on-hold', label: 'On Hold' },
+         ],
+         label: 'Project Status',
+       },
+
+       featured: {
+         type: 'boolean',
+         defaultValue: false,
+         label: 'Featured Project',
+       },
+
+       startDate: {
+         type: 'date',
+         label: 'Start Date',
+       },
+
+       endDate: {
+         type: 'date',
+         label: 'End Date',
+       },
+
+       client: {
+         type: 'text',
+         label: 'Client/Company',
+       },
+
+       category: {
+         type: 'select',
+         options: [
+           { value: 'web', label: 'Web Development' },
+           { value: 'mobile', label: 'Mobile App' },
+           { value: 'design', label: 'UI/UX Design' },
+           { value: 'api', label: 'API Development' },
+         ],
+         label: 'Project Category',
+       },
+     },
+   });
+   ```
+
+2. ### Create technology and skill models
+
+   ```typescript title="schema/technology.ts"
+   export const technology = defineModel({
+     name: 'technology',
+     label: 'Technology',
+
+     fields: {
+       name: {
+         type: 'text',
+         required: true,
+         unique: true,
+         label: 'Technology Name',
+       },
+
+       icon: {
+         type: 'image',
+         label: 'Technology Icon',
+         aspectRatio: '1:1',
+       },
+
+       color: {
+         type: 'color',
+         label: 'Brand Color',
+       },
+
+       category: {
+         type: 'select',
+         options: [
+           { value: 'frontend', label: 'Frontend' },
+           { value: 'backend', label: 'Backend' },
+           { value: 'database', label: 'Database' },
+           { value: 'tool', label: 'Tool' },
+           { value: 'framework', label: 'Framework' },
+         ],
+         label: 'Category',
+       },
+
+       proficiency: {
+         type: 'select',
+         options: [
+           { value: 'beginner', label: 'Beginner' },
+           { value: 'intermediate', label: 'Intermediate' },
+           { value: 'advanced', label: 'Advanced' },
+           { value: 'expert', label: 'Expert' },
+         ],
+         label: 'Proficiency Level',
+       },
+     },
+   });
+   ```
+
+</Steps>
+
+## E-commerce
+
+### Building a Product Recommendation System
+
+Implement smart product recommendations based on user behavior.
+
+<Steps>
+
+1. ### Track user interactions
+
+   ```typescript title="lib/analytics.ts"
+   import { scalar } from '@/lib/scalar';
+
+   export async function trackProductView(productId: string, userId?: string) {
+     await scalar.content.create({
+       model: 'productView',
+       data: {
+         productId,
+         userId,
+         timestamp: new Date(),
+         sessionId: getSessionId(),
+       },
+     });
+   }
+
+   export async function trackPurchase(productIds: string[], userId?: string) {
+     await scalar.content.create({
+       model: 'purchase',
+       data: {
+         productIds,
+         userId,
+         timestamp: new Date(),
+         sessionId: getSessionId(),
+       },
+     });
+   }
+   ```
+
+2. ### Generate recommendations
+
+   ```typescript title="lib/recommendations.ts"
+   export async function getRecommendations(productId: string, limit = 4) {
+     // Find products frequently viewed together
+     const relatedViews = await scalar.content.findMany({
+       model: 'productView',
+       filter: {
+         sessionId: { $in: await getSessionsWithProduct(productId) },
+         productId: { $ne: productId },
+       },
+       aggregate: [
+         {
+           $group: {
+             _id: '$productId',
+             count: { $sum: 1 },
+           },
+         },
+         { $sort: { count: -1 } },
+         { $limit: limit },
+       ],
+     });
+
+     const recommendedIds = relatedViews.map((view) => view._id);
+
+     return scalar.content.findMany({
+       model: 'product',
+       filter: { id: { $in: recommendedIds } },
+       populate: ['images', 'categories'],
+     });
+   }
+   ```
+
+</Steps>
+
+## User Management
+
+### Building a User Profile System
+
+Create comprehensive user profiles with preferences and activity tracking.
+
+<Steps>
+
+1. ### Design the user profile model
+
+   ```typescript title="schema/user-profile.ts"
+   export const userProfile = defineModel({
+     name: 'userProfile',
+     label: 'User Profile',
+
+     fields: {
+       user: {
+         type: 'relationship',
+         model: 'user',
+         required: true,
+         unique: true,
+         label: 'User Account',
+       },
+
+       displayName: {
+         type: 'text',
+         label: 'Display Name',
+       },
+
+       avatar: {
+         type: 'image',
+         label: 'Profile Picture',
+         aspectRatio: '1:1',
+       },
+
+       bio: {
+         type: 'textarea',
+         label: 'Biography',
+         maxLength: 500,
+       },
+
+       location: {
+         type: 'group',
+         label: 'Location',
+         fields: {
+           city: { type: 'text', label: 'City' },
+           country: { type: 'text', label: 'Country' },
+           timezone: { type: 'text', label: 'Timezone' },
+         },
+       },
+
+       preferences: {
+         type: 'group',
+         label: 'Preferences',
+         fields: {
+           theme: {
+             type: 'select',
+             options: ['light', 'dark', 'auto'],
+             defaultValue: 'auto',
+             label: 'Theme',
+           },
+           language: {
+             type: 'select',
+             options: ['en', 'es', 'fr', 'de'],
+             defaultValue: 'en',
+             label: 'Language',
+           },
+           emailNotifications: {
+             type: 'boolean',
+             defaultValue: true,
+             label: 'Email Notifications',
+           },
+         },
+       },
+
+       socialLinks: {
+         type: 'array',
+         of: 'group',
+         label: 'Social Links',
+         fields: {
+           platform: {
+             type: 'select',
+             options: ['twitter', 'linkedin', 'github', 'website'],
+             label: 'Platform',
+           },
+           url: { type: 'url', label: 'URL' },
+         },
+       },
+
+       interests: {
+         type: 'relationship',
+         model: 'interest',
+         multiple: true,
+         label: 'Interests',
+       },
+     },
+   });
+   ```
+
+</Steps>
+
+## Advanced Features
+
+### Implementing Full-Text Search
+
+Add powerful search capabilities to your application.
+
+<Steps>
+
+1. ### Set up search indexing
+
+   ```typescript title="lib/search-index.ts"
+   import { Client } from '@elastic/elasticsearch';
+
+   const client = new Client({
+     node: process.env.ELASTICSEARCH_URL,
+   });
+
+   export async function indexContent(model: string, data: any) {
+     await client.index({
+       index: 'content',
+       id: `${model}-${data.id}`,
+       body: {
+         model,
+         title: data.title,
+         content: data.content || data.description,
+         slug: data.slug,
+         status: data.status,
+         publishedAt: data.publishedAt,
+         tags: data.tags || [],
+         categories: data.categories?.map((c) => c.name) || [],
+       },
+     });
+   }
+
+   export async function searchContent(query: string, filters = {}) {
+     const body = {
+       query: {
+         bool: {
+           must: [
+             {
+               multi_match: {
+                 query,
+                 fields: ['title^3', 'content', 'tags^2'],
+                 fuzziness: 'AUTO',
+               },
+             },
+           ],
+           filter: Object.entries(filters).map(([key, value]) => ({
+             term: { [key]: value },
+           })),
+         },
+       },
+       highlight: {
+         fields: {
+           title: {},
+           content: {
+             fragment_size: 150,
+             number_of_fragments: 3,
+           },
+         },
+       },
+     };
+
+     const response = await client.search({
+       index: 'content',
+       body,
+     });
+
+     return response.body.hits.hits.map((hit) => ({
+       id: hit._id,
+       score: hit._score,
+       data: hit._source,
+       highlights: hit.highlight,
+     }));
+   }
+   ```
+
+</Steps>
+
+<Aside type="tip">
+  These tutorials provide practical examples for common use cases. Adapt them to
+  your specific requirements and extend them with additional features as needed.
+</Aside>

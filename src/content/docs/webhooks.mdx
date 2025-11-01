@@ -1,0 +1,583 @@
+---
+title: Webhooks
+description: Real-time notifications when your content changes
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+## Configuration
+
+Configure webhooks in your Scalar configuration file:
+
+```typescript title="scalar.config.ts"
+export default defineConfig({
+  webhooks: {
+    enabled: true,
+    endpoints: [
+      {
+        url: 'https://your-app.com/api/webhook',
+        events: ['create', 'update', 'delete'],
+        models: ['blogPost', 'page'],
+        secret: process.env.WEBHOOK_SECRET,
+        headers: {
+          'X-Custom-Header': 'value',
+        },
+        timeout: 5000, // 5 seconds
+        retries: 3,
+      },
+      {
+        url: 'https://api.vercel.com/v1/integrations/deploy/prj_xxx/yyy',
+        events: ['update', 'delete'],
+        models: ['blogPost'],
+        method: 'POST',
+      },
+    ],
+  },
+});
+```
+
+### Configuration Options
+
+| Option    | Type     | Description                                              |
+| --------- | -------- | -------------------------------------------------------- |
+| `url`     | string   | The endpoint URL to send webhooks to                     |
+| `events`  | string[] | Events to trigger webhooks: `create`, `update`, `delete` |
+| `models`  | string[] | Content models to watch for changes                      |
+| `secret`  | string   | Secret for verifying webhook authenticity                |
+| `headers` | object   | Custom headers to include in requests                    |
+| `timeout` | number   | Request timeout in milliseconds (default: 5000)          |
+| `retries` | number   | Number of retry attempts on failure (default: 3)         |
+| `method`  | string   | HTTP method (default: 'POST')                            |
+
+## Webhook Events
+
+Scalar sends webhooks for the following events:
+
+### Content Events
+
+- **`create`** - When new content is created
+- **`update`** - When existing content is modified
+- **`delete`** - When content is deleted
+- **`publish`** - When content status changes to published
+- **`unpublish`** - When content status changes from published
+
+### System Events
+
+- **`user.create`** - When a new user is created
+- **`user.login`** - When a user logs in
+- **`backup.complete`** - When a backup is completed
+
+## Payload Structure
+
+Webhooks send a JSON payload with the following structure:
+
+```json
+{
+  "id": "webhook_event_123",
+  "event": "create",
+  "model": "blogPost",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "data": {
+    "id": "post_456",
+    "title": "My New Blog Post",
+    "slug": "my-new-blog-post",
+    "status": "published",
+    "author": {
+      "id": "user_789",
+      "name": "John Doe"
+    },
+    "createdAt": "2024-01-15T10:30:00Z",
+    "updatedAt": "2024-01-15T10:30:00Z"
+  },
+  "previous": null,
+  "user": {
+    "id": "user_789",
+    "name": "John Doe",
+    "email": "john@example.com"
+  }
+}
+```
+
+### Payload Fields
+
+| Field       | Type   | Description                                   |
+| ----------- | ------ | --------------------------------------------- |
+| `id`        | string | Unique webhook event ID                       |
+| `event`     | string | The event type that triggered the webhook     |
+| `model`     | string | The content model that was changed            |
+| `timestamp` | string | ISO 8601 timestamp of when the event occurred |
+| `data`      | object | The current state of the content              |
+| `previous`  | object | Previous state (only for update events)       |
+| `user`      | object | User who triggered the change                 |
+
+## Implementing Webhook Handlers
+
+### Next.js API Route
+
+```typescript title="pages/api/webhook.ts"
+import { NextApiRequest, NextApiResponse } from 'next';
+import crypto from 'crypto';
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Verify webhook signature
+  const signature = req.headers['x-scalar-signature'] as string;
+  const isValid = verifyWebhookSignature(
+    JSON.stringify(req.body),
+    signature,
+    process.env.WEBHOOK_SECRET!,
+  );
+
+  if (!isValid) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  const { event, model, data } = req.body;
+
+  try {
+    switch (event) {
+      case 'create':
+        await handleCreate(model, data);
+        break;
+      case 'update':
+        await handleUpdate(model, data);
+        break;
+      case 'delete':
+        await handleDelete(model, data);
+        break;
+      default:
+        console.log(`Unhandled event: ${event}`);
+    }
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Webhook processing error:', error);
+    res.status(500).json({ error: 'Processing failed' });
+  }
+}
+
+function verifyWebhookSignature(
+  payload: string,
+  signature: string,
+  secret: string,
+): boolean {
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex');
+
+  return crypto.timingSafeEqual(
+    Buffer.from(signature.replace('sha256=', '')),
+    Buffer.from(expectedSignature),
+  );
+}
+
+async function handleCreate(model: string, data: any) {
+  if (model === 'blogPost' && data.status === 'published') {
+    // Trigger static site rebuild
+    await fetch('https://api.vercel.com/v1/integrations/deploy/xxx', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${process.env.VERCEL_TOKEN}` },
+    });
+
+    // Update search index
+    await updateSearchIndex(data);
+
+    // Send notification
+    await sendNotification(`New blog post published: ${data.title}`);
+  }
+}
+
+async function handleUpdate(model: string, data: any) {
+  if (model === 'blogPost') {
+    // Update search index with new content
+    await updateSearchIndex(data);
+
+    // Clear CDN cache for this post
+    await clearCache(`/blog/${data.slug}`);
+  }
+}
+
+async function handleDelete(model: string, data: any) {
+  if (model === 'blogPost') {
+    // Remove from search index
+    await removeFromSearchIndex(data.id);
+
+    // Clear CDN cache
+    await clearCache(`/blog/${data.slug}`);
+  }
+}
+```
+
+### Express.js Handler
+
+```javascript title="routes/webhook.js"
+const express = require('express');
+const crypto = require('crypto');
+const router = express.Router();
+
+router.post(
+  '/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res) => {
+    const signature = req.headers['x-scalar-signature'];
+    const payload = req.body;
+
+    // Verify signature
+    const expectedSignature = crypto
+      .createHmac('sha256', process.env.WEBHOOK_SECRET)
+      .update(payload)
+      .digest('hex');
+
+    if (`sha256=${expectedSignature}` !== signature) {
+      return res.status(401).send('Invalid signature');
+    }
+
+    const webhookData = JSON.parse(payload);
+
+    // Process webhook
+    processWebhook(webhookData)
+      .then(() => res.status(200).send('OK'))
+      .catch((error) => {
+        console.error('Webhook error:', error);
+        res.status(500).send('Error processing webhook');
+      });
+  },
+);
+
+async function processWebhook({ event, model, data }) {
+  switch (event) {
+    case 'create':
+      if (model === 'blogPost') {
+        await notifySlack(`New blog post: ${data.title}`);
+      }
+      break;
+    case 'update':
+      await invalidateCache(model, data.id);
+      break;
+    case 'delete':
+      await removeFromIndex(model, data.id);
+      break;
+  }
+}
+
+module.exports = router;
+```
+
+## Common Use Cases
+
+### Static Site Regeneration
+
+Trigger builds when content changes:
+
+<Tabs>
+  <TabItem label="Vercel">
+    ```typescript
+    // Trigger Vercel deployment
+    async function triggerVercelBuild() {
+      const response = await fetch(
+        `https://api.vercel.com/v1/integrations/deploy/${process.env.VERCEL_HOOK_ID}`,
+        { method: 'POST' }
+      );
+      
+      if (!response.ok) {
+        throw new Error('Failed to trigger build');
+      }
+      
+      return response.json();
+    }
+    ```
+  </TabItem>
+  
+  <TabItem label="Netlify">
+    ```typescript
+    // Trigger Netlify build
+    async function triggerNetlifyBuild() {
+      const response = await fetch(
+        `https://api.netlify.com/build_hooks/${process.env.NETLIFY_HOOK_ID}`,
+        { method: 'POST' }
+      );
+      
+      return response.json();
+    }
+    ```
+  </TabItem>
+  
+  <TabItem label="GitHub Actions">
+    ```typescript
+    // Trigger GitHub Actions workflow
+    async function triggerGitHubAction() {
+      const response = await fetch(
+        `https://api.github.com/repos/${process.env.GITHUB_REPO}/dispatches`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `token ${process.env.GITHUB_TOKEN}`,
+            'Accept': 'application/vnd.github.v3+json',
+          },
+          body: JSON.stringify({
+            event_type: 'content-update',
+          }),
+        }
+      );
+      
+      return response.json();
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+### Search Index Updates
+
+Keep search indexes synchronized:
+
+```typescript title="lib/search.ts"
+import { Client } from '@elastic/elasticsearch';
+
+const client = new Client({
+  node: process.env.ELASTICSEARCH_URL,
+});
+
+export async function updateSearchIndex(data: any) {
+  await client.index({
+    index: 'content',
+    id: data.id,
+    body: {
+      title: data.title,
+      content: data.content,
+      slug: data.slug,
+      publishedAt: data.publishedAt,
+      model: data.model,
+    },
+  });
+}
+
+export async function removeFromSearchIndex(id: string) {
+  await client.delete({
+    index: 'content',
+    id: id,
+  });
+}
+```
+
+### Cache Invalidation
+
+Clear CDN and application caches:
+
+```typescript title="lib/cache.ts"
+import { CloudFront } from 'aws-sdk';
+
+const cloudfront = new CloudFront();
+
+export async function clearCDNCache(paths: string[]) {
+  const params = {
+    DistributionId: process.env.CLOUDFRONT_DISTRIBUTION_ID!,
+    InvalidationBatch: {
+      CallerReference: Date.now().toString(),
+      Paths: {
+        Quantity: paths.length,
+        Items: paths,
+      },
+    },
+  };
+
+  await cloudfront.createInvalidation(params).promise();
+}
+
+export async function clearApplicationCache(key: string) {
+  // Clear Redis cache
+  await redis.del(key);
+
+  // Clear in-memory cache
+  cache.delete(key);
+}
+```
+
+### Notifications
+
+Send notifications to team members:
+
+```typescript title="lib/notifications.ts"
+// Slack notification
+export async function notifySlack(message: string) {
+  await fetch(process.env.SLACK_WEBHOOK_URL!, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: message }),
+  });
+}
+
+// Discord notification
+export async function notifyDiscord(message: string) {
+  await fetch(process.env.DISCORD_WEBHOOK_URL!, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content: message }),
+  });
+}
+
+// Email notification
+export async function sendEmail(subject: string, body: string) {
+  // Using your preferred email service
+  await emailService.send({
+    to: process.env.NOTIFICATION_EMAIL,
+    subject,
+    html: body,
+  });
+}
+```
+
+## Testing Webhooks
+
+### Local Development
+
+Use tools like ngrok to test webhooks locally:
+
+```bash
+# Install ngrok
+npm install -g ngrok
+
+# Start your local server
+npm run dev
+
+# In another terminal, expose local server
+ngrok http 3000
+
+# Use the ngrok URL in your webhook configuration
+# https://abc123.ngrok.io/api/webhook
+```
+
+### Webhook Testing Tool
+
+Create a simple webhook testing endpoint:
+
+```typescript title="pages/api/webhook-test.ts"
+import { NextApiRequest, NextApiResponse } from 'next';
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log('Webhook received:');
+  console.log('Headers:', req.headers);
+  console.log('Body:', req.body);
+
+  // Log to file for debugging
+  const fs = require('fs');
+  const logEntry = {
+    timestamp: new Date().toISOString(),
+    headers: req.headers,
+    body: req.body,
+  };
+
+  fs.appendFileSync(
+    'webhook-logs.json',
+    JSON.stringify(logEntry, null, 2) + '\n',
+  );
+
+  res.status(200).json({ success: true });
+}
+```
+
+### Unit Tests
+
+```typescript title="__tests__/webhook.test.ts"
+import { createMocks } from 'node-mocks-http';
+import handler from '@/pages/api/webhook';
+import crypto from 'crypto';
+
+describe('/api/webhook', () => {
+  it('should process valid webhook', async () => {
+    const payload = {
+      event: 'create',
+      model: 'blogPost',
+      data: { id: '1', title: 'Test Post' },
+    };
+
+    const signature = crypto
+      .createHmac('sha256', 'test-secret')
+      .update(JSON.stringify(payload))
+      .digest('hex');
+
+    const { req, res } = createMocks({
+      method: 'POST',
+      headers: {
+        'x-scalar-signature': `sha256=${signature}`,
+      },
+      body: payload,
+    });
+
+    await handler(req, res);
+
+    expect(res._getStatusCode()).toBe(200);
+  });
+
+  it('should reject invalid signature', async () => {
+    const { req, res } = createMocks({
+      method: 'POST',
+      headers: {
+        'x-scalar-signature': 'sha256=invalid',
+      },
+      body: { event: 'create' },
+    });
+
+    await handler(req, res);
+
+    expect(res._getStatusCode()).toBe(401);
+  });
+});
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Webhook not firing**
+
+   - Check webhook configuration
+   - Verify model names match exactly
+   - Ensure events are configured correctly
+
+2. **Invalid signature errors**
+
+   - Verify webhook secret matches configuration
+   - Check signature generation algorithm
+   - Ensure raw body is used for signature verification
+
+3. **Timeout errors**
+   - Increase timeout value in configuration
+   - Optimize webhook handler performance
+   - Consider async processing for heavy operations
+
+### Debugging
+
+Enable webhook logging in development:
+
+```typescript title="scalar.config.ts"
+export default defineConfig({
+  webhooks: {
+    enabled: true,
+    debug: process.env.NODE_ENV === 'development',
+    logging: {
+      level: 'debug',
+      file: './webhook-debug.log',
+    },
+  },
+});
+```
+
+<Aside type="caution">
+  **Security Note**: Always verify webhook signatures in production to ensure
+  requests are from your Scalar instance.
+</Aside>
+
+<Aside type="tip">
+  **Reliability**: Scalar automatically retries failed webhooks with exponential
+  backoff. Failed webhooks are logged and can be manually retried from the admin
+  panel.
+</Aside>

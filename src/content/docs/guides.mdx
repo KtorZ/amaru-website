@@ -1,0 +1,1232 @@
+---
+title: Guides
+description: Step-by-step tutorials and best practices for Scalar CMS
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Getting Started Guides
+
+<CardGrid>
+  <Card title="Build Your First Blog" icon="open-book">
+    Create a complete blog with posts, categories, and SEO
+  </Card>
+  <Card title="E-commerce Store" icon="setting">
+    Build a product catalog with shopping cart functionality
+  </Card>
+  <Card title="Portfolio Website" icon="star">
+    Showcase your work with a dynamic portfolio
+  </Card>
+  <Card title="Multi-tenant SaaS" icon="rocket">
+    Build a SaaS application with tenant isolation
+  </Card>
+</CardGrid>
+
+## Build Your First Blog
+
+Learn how to create a feature-rich blog from scratch.
+
+<Steps>
+
+1. ### Set up the project
+
+   Start by creating a new Scalar project:
+
+   ```bash
+   npx create-scalar-app my-blog --template blog
+   cd my-blog
+   npm install
+   ```
+
+   This creates a new project with blog-specific templates and configurations.
+
+2. ### Define content models
+
+   Create your blog post model:
+
+   ```typescript title="schema/blog-post.ts"
+   import { defineModel } from '@scalar/core';
+
+   export const blogPost = defineModel({
+     name: 'blogPost',
+     label: 'Blog Post',
+     description: 'Blog posts for the website',
+
+     fields: {
+       title: {
+         type: 'text',
+         required: true,
+         label: 'Title',
+         validation: {
+           minLength: 5,
+           maxLength: 100,
+         },
+       },
+
+       slug: {
+         type: 'slug',
+         source: 'title',
+         required: true,
+         unique: true,
+         label: 'URL Slug',
+       },
+
+       content: {
+         type: 'richtext',
+         required: true,
+         label: 'Content',
+         toolbar: [
+           'bold',
+           'italic',
+           'link',
+           'heading',
+           'bulletList',
+           'orderedList',
+         ],
+       },
+
+       excerpt: {
+         type: 'textarea',
+         label: 'Excerpt',
+         description: 'Short description for preview cards',
+         maxLength: 200,
+       },
+
+       featuredImage: {
+         type: 'image',
+         label: 'Featured Image',
+         aspectRatio: '16:9',
+         sizes: [
+           { width: 800, height: 450, label: 'Medium' },
+           { width: 1200, height: 675, label: 'Large' },
+         ],
+       },
+
+       author: {
+         type: 'relationship',
+         model: 'author',
+         required: true,
+         label: 'Author',
+       },
+
+       categories: {
+         type: 'relationship',
+         model: 'category',
+         multiple: true,
+         label: 'Categories',
+       },
+
+       tags: {
+         type: 'array',
+         of: 'text',
+         label: 'Tags',
+         description: 'Keywords for better discoverability',
+       },
+
+       publishedAt: {
+         type: 'datetime',
+         label: 'Published At',
+         defaultValue: () => new Date(),
+       },
+
+       status: {
+         type: 'select',
+         options: [
+           { value: 'draft', label: 'Draft' },
+           { value: 'published', label: 'Published' },
+           { value: 'archived', label: 'Archived' },
+         ],
+         defaultValue: 'draft',
+         label: 'Status',
+       },
+
+       featured: {
+         type: 'boolean',
+         label: 'Featured Post',
+         defaultValue: false,
+         description: 'Show on homepage hero section',
+       },
+
+       seo: {
+         type: 'group',
+         label: 'SEO Settings',
+         collapsible: true,
+         fields: {
+           metaTitle: {
+             type: 'text',
+             label: 'Meta Title',
+             maxLength: 60,
+           },
+           metaDescription: {
+             type: 'textarea',
+             label: 'Meta Description',
+             maxLength: 160,
+           },
+           ogImage: {
+             type: 'image',
+             label: 'Social Media Image',
+             aspectRatio: '1.91:1',
+           },
+         },
+       },
+     },
+
+     // Admin interface configuration
+     admin: {
+       defaultSort: '-publishedAt',
+       searchFields: ['title', 'excerpt', 'content'],
+       filterFields: ['status', 'author', 'categories', 'featured'],
+       listView: {
+         fields: ['title', 'author', 'status', 'publishedAt', 'featured'],
+       },
+     },
+
+     // Hooks for automated tasks
+     hooks: {
+       beforeCreate: async (data) => {
+         // Auto-generate excerpt if not provided
+         if (!data.excerpt && data.content) {
+           data.excerpt = stripHtml(data.content).substring(0, 160) + '...';
+         }
+
+         // Auto-generate SEO meta title
+         if (!data.seo?.metaTitle) {
+           data.seo = { ...data.seo, metaTitle: data.title };
+         }
+       },
+
+       afterCreate: async (record) => {
+         // Send notifications, update search index, etc.
+         if (record.status === 'published') {
+           await notifySubscribers(record);
+           await updateSearchIndex(record);
+         }
+       },
+
+       afterUpdate: async (record, changes) => {
+         // Handle status changes
+         if (changes.status === 'published' && record.status === 'published') {
+           await notifySubscribers(record);
+         }
+       },
+     },
+   });
+   ```
+
+3. ### Create supporting models
+
+   Create author and category models:
+
+   ```typescript title="schema/author.ts"
+   export const author = defineModel({
+     name: 'author',
+     label: 'Author',
+
+     fields: {
+       name: {
+         type: 'text',
+         required: true,
+         label: 'Full Name',
+       },
+
+       email: {
+         type: 'email',
+         required: true,
+         unique: true,
+         label: 'Email Address',
+       },
+
+       bio: {
+         type: 'textarea',
+         label: 'Biography',
+         maxLength: 500,
+       },
+
+       avatar: {
+         type: 'image',
+         label: 'Profile Picture',
+         aspectRatio: '1:1',
+       },
+
+       socialLinks: {
+         type: 'group',
+         label: 'Social Media',
+         fields: {
+           twitter: { type: 'url', label: 'Twitter' },
+           linkedin: { type: 'url', label: 'LinkedIn' },
+           github: { type: 'url', label: 'GitHub' },
+           website: { type: 'url', label: 'Personal Website' },
+         },
+       },
+     },
+   });
+   ```
+
+   ```typescript title="schema/category.ts"
+   export const category = defineModel({
+     name: 'category',
+     label: 'Category',
+
+     fields: {
+       name: {
+         type: 'text',
+         required: true,
+         label: 'Category Name',
+       },
+
+       slug: {
+         type: 'slug',
+         source: 'name',
+         required: true,
+         unique: true,
+       },
+
+       description: {
+         type: 'textarea',
+         label: 'Description',
+       },
+
+       color: {
+         type: 'color',
+         label: 'Brand Color',
+         defaultValue: '#3b82f6',
+       },
+
+       parent: {
+         type: 'relationship',
+         model: 'category',
+         label: 'Parent Category',
+       },
+     },
+   });
+   ```
+
+4. ### Build the frontend
+
+   Create your blog listing page:
+
+   ```tsx title="app/blog/page.tsx"
+   import { scalar } from '@/lib/scalar';
+   import { BlogCard } from '@/components/blog-card';
+   import { Pagination } from '@/components/pagination';
+   import { CategoryFilter } from '@/components/category-filter';
+
+   interface BlogPageProps {
+     searchParams: {
+       page?: string;
+       category?: string;
+       tag?: string;
+     };
+   }
+
+   export default async function BlogPage({ searchParams }: BlogPageProps) {
+     const currentPage = parseInt(searchParams.page || '1');
+     const pageSize = 12;
+
+     // Build filter conditions
+     const filter: any = { status: 'published' };
+     if (searchParams.category) {
+       filter['categories.slug'] = searchParams.category;
+     }
+     if (searchParams.tag) {
+       filter.tags = { $contains: searchParams.tag };
+     }
+
+     // Fetch posts with pagination
+     const { data: posts, meta } = await scalar.content.findMany({
+       model: 'blogPost',
+       filter,
+       populate: ['author', 'categories', 'featuredImage'],
+       sort: '-publishedAt',
+       limit: pageSize,
+       offset: (currentPage - 1) * pageSize,
+     });
+
+     // Fetch categories for filter
+     const categories = await scalar.content.findMany({
+       model: 'category',
+       sort: 'name',
+     });
+
+     return (
+       <div className="container mx-auto px-4 py-8">
+         <div className="mb-8">
+           <h1 className="mb-4 text-4xl font-bold">Blog</h1>
+           <p className="text-lg text-gray-600">
+             Discover our latest insights and tutorials
+           </p>
+         </div>
+
+         <CategoryFilter
+           categories={categories}
+           selectedCategory={searchParams.category}
+         />
+
+         <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+           {posts.map((post) => (
+             <BlogCard key={post.id} post={post} />
+           ))}
+         </div>
+
+         {posts.length === 0 && (
+           <div className="py-12 text-center">
+             <p className="text-lg text-gray-500">No posts found</p>
+           </div>
+         )}
+
+         <Pagination
+           currentPage={currentPage}
+           totalPages={Math.ceil(meta.total / pageSize)}
+           baseUrl="/blog"
+         />
+       </div>
+     );
+   }
+
+   export async function generateMetadata({ searchParams }: BlogPageProps) {
+     let title = 'Blog';
+     let description = 'Read our latest blog posts and insights';
+
+     if (searchParams.category) {
+       const category = await scalar.content.findOne({
+         model: 'category',
+         filter: { slug: searchParams.category },
+       });
+       if (category) {
+         title = `${category.name} - Blog`;
+         description = category.description || description;
+       }
+     }
+
+     return { title, description };
+   }
+   ```
+
+5. ### Create individual post pages
+
+   ```tsx title="app/blog/[slug]/page.tsx"
+   import { notFound } from 'next/navigation';
+   import { scalar } from '@/lib/scalar';
+   import { BlogContent } from '@/components/blog-content';
+   import { AuthorCard } from '@/components/author-card';
+   import { RelatedPosts } from '@/components/related-posts';
+
+   interface BlogPostPageProps {
+     params: { slug: string };
+   }
+
+   export default async function BlogPostPage({ params }: BlogPostPageProps) {
+     const post = await scalar.content.findOne({
+       model: 'blogPost',
+       filter: {
+         slug: params.slug,
+         status: 'published',
+       },
+       populate: ['author', 'categories', 'featuredImage'],
+     });
+
+     if (!post) {
+       notFound();
+     }
+
+     // Fetch related posts
+     const relatedPosts = await scalar.content.findMany({
+       model: 'blogPost',
+       filter: {
+         status: 'published',
+         id: { $ne: post.id },
+         categories: { $in: post.categories.map((c) => c.id) },
+       },
+       populate: ['author', 'featuredImage'],
+       limit: 3,
+       sort: '-publishedAt',
+     });
+
+     return (
+       <article className="container mx-auto px-4 py-8">
+         <div className="mx-auto max-w-4xl">
+           <header className="mb-8">
+             <div className="mb-4 flex flex-wrap gap-2">
+               {post.categories.map((category) => (
+                 <span
+                   key={category.id}
+                   className="rounded-full px-3 py-1 text-sm text-white"
+                   style={{ backgroundColor: category.color }}
+                 >
+                   {category.name}
+                 </span>
+               ))}
+             </div>
+
+             <h1 className="mb-4 text-4xl font-bold md:text-5xl">
+               {post.title}
+             </h1>
+
+             {post.excerpt && (
+               <p className="mb-6 text-xl text-gray-600">{post.excerpt}</p>
+             )}
+
+             <div className="flex items-center gap-4 text-gray-500">
+               <time dateTime={post.publishedAt}>
+                 {formatDate(post.publishedAt)}
+               </time>
+               <span>•</span>
+               <span>{calculateReadingTime(post.content)} min read</span>
+             </div>
+           </header>
+
+           {post.featuredImage && (
+             <div className="mb-8">
+               <img
+                 src={post.featuredImage.url}
+                 alt={post.featuredImage.alt || post.title}
+                 className="h-auto w-full rounded-lg"
+               />
+             </div>
+           )}
+
+           <BlogContent content={post.content} />
+
+           <footer className="mt-12 border-t pt-8">
+             <AuthorCard author={post.author} />
+           </footer>
+         </div>
+
+         <aside className="mt-16">
+           <RelatedPosts posts={relatedPosts} />
+         </aside>
+       </article>
+     );
+   }
+
+   export async function generateMetadata({ params }: BlogPostPageProps) {
+     const post = await scalar.content.findOne({
+       model: 'blogPost',
+       filter: { slug: params.slug, status: 'published' },
+     });
+
+     if (!post) return {};
+
+     return {
+       title: post.seo?.metaTitle || post.title,
+       description: post.seo?.metaDescription || post.excerpt,
+       openGraph: {
+         title: post.title,
+         description: post.excerpt,
+         images: post.seo?.ogImage ? [post.seo.ogImage.url] : [],
+         type: 'article',
+         publishedTime: post.publishedAt,
+       },
+     };
+   }
+
+   export async function generateStaticParams() {
+     const posts = await scalar.content.findMany({
+       model: 'blogPost',
+       filter: { status: 'published' },
+       select: ['slug'],
+     });
+
+     return posts.map((post) => ({
+       slug: post.slug,
+     }));
+   }
+   ```
+
+6. ### Add search functionality
+
+   ```tsx title="components/blog-search.tsx"
+   'use client';
+
+   import { useState, useEffect } from 'react';
+   import { useRouter, useSearchParams } from 'next/navigation';
+   import { SearchIcon } from 'lucide-react';
+
+   export function BlogSearch() {
+     const router = useRouter();
+     const searchParams = useSearchParams();
+     const [query, setQuery] = useState(searchParams.get('q') || '');
+
+     const handleSearch = (e: React.FormEvent) => {
+       e.preventDefault();
+
+       const params = new URLSearchParams(searchParams);
+       if (query) {
+         params.set('q', query);
+       } else {
+         params.delete('q');
+       }
+
+       router.push(`/blog/search?${params.toString()}`);
+     };
+
+     return (
+       <form onSubmit={handleSearch} className="relative">
+         <input
+           type="search"
+           value={query}
+           onChange={(e) => setQuery(e.target.value)}
+           placeholder="Search posts..."
+           className="w-full rounded-lg border py-2 pr-4 pl-10 focus:ring-2 focus:ring-blue-500"
+         />
+         <SearchIcon className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
+       </form>
+     );
+   }
+   ```
+
+</Steps>
+
+## E-commerce Store
+
+Build a complete product catalog with cart functionality.
+
+<Steps>
+
+1. ### Initialize the project
+
+   ```bash
+   npx create-scalar-app my-store --template ecommerce
+   cd my-store
+   npm install
+
+   # Install additional dependencies
+   npm install stripe @stripe/stripe-js
+   ```
+
+2. ### Design the product model
+
+   ```typescript title="schema/product.ts"
+   export const product = defineModel({
+     name: 'product',
+     label: 'Product',
+
+     fields: {
+       name: {
+         type: 'text',
+         required: true,
+         label: 'Product Name',
+       },
+
+       slug: {
+         type: 'slug',
+         source: 'name',
+         required: true,
+         unique: true,
+       },
+
+       description: {
+         type: 'richtext',
+         label: 'Description',
+       },
+
+       shortDescription: {
+         type: 'textarea',
+         label: 'Short Description',
+         maxLength: 160,
+       },
+
+       images: {
+         type: 'array',
+         of: 'image',
+         label: 'Product Images',
+         minItems: 1,
+         validation: {
+           maxItems: 10,
+         },
+       },
+
+       pricing: {
+         type: 'group',
+         label: 'Pricing',
+         fields: {
+           price: {
+             type: 'number',
+             required: true,
+             min: 0,
+             label: 'Price',
+             decimals: 2,
+           },
+           comparePrice: {
+             type: 'number',
+             min: 0,
+             label: 'Compare at Price',
+             decimals: 2,
+           },
+           cost: {
+             type: 'number',
+             min: 0,
+             label: 'Cost per Item',
+             decimals: 2,
+           },
+         },
+       },
+
+       inventory: {
+         type: 'group',
+         label: 'Inventory',
+         fields: {
+           sku: {
+             type: 'text',
+             unique: true,
+             label: 'SKU',
+           },
+           trackQuantity: {
+             type: 'boolean',
+             defaultValue: true,
+             label: 'Track Quantity',
+           },
+           quantity: {
+             type: 'number',
+             min: 0,
+             label: 'Available Quantity',
+           },
+           lowStockThreshold: {
+             type: 'number',
+             min: 0,
+             defaultValue: 5,
+             label: 'Low Stock Alert',
+           },
+         },
+       },
+
+       variants: {
+         type: 'array',
+         of: 'group',
+         label: 'Product Variants',
+         fields: {
+           name: { type: 'text', required: true, label: 'Variant Name' },
+           sku: { type: 'text', unique: true, label: 'Variant SKU' },
+           price: { type: 'number', min: 0, decimals: 2, label: 'Price' },
+           quantity: { type: 'number', min: 0, label: 'Quantity' },
+           image: { type: 'image', label: 'Variant Image' },
+           options: {
+             type: 'json',
+             label: 'Variant Options',
+             // e.g., { "color": "red", "size": "large" }
+           },
+         },
+       },
+
+       categories: {
+         type: 'relationship',
+         model: 'productCategory',
+         multiple: true,
+         label: 'Categories',
+       },
+
+       tags: {
+         type: 'array',
+         of: 'text',
+         label: 'Product Tags',
+       },
+
+       status: {
+         type: 'select',
+         options: [
+           { value: 'draft', label: 'Draft' },
+           { value: 'active', label: 'Active' },
+           { value: 'archived', label: 'Archived' },
+         ],
+         defaultValue: 'draft',
+         label: 'Status',
+       },
+
+       seo: {
+         type: 'group',
+         label: 'SEO',
+         collapsible: true,
+         fields: {
+           metaTitle: { type: 'text', label: 'Meta Title' },
+           metaDescription: { type: 'textarea', label: 'Meta Description' },
+         },
+       },
+     },
+
+     hooks: {
+       beforeCreate: async (data) => {
+         if (!data.inventory?.sku) {
+           data.inventory = {
+             ...data.inventory,
+             sku: await generateSKU(data.name),
+           };
+         }
+       },
+
+       afterUpdate: async (record, changes) => {
+         // Check for low stock
+         if (changes.inventory?.quantity !== undefined) {
+           await checkLowStock(record);
+         }
+
+         // Update search index
+         if (changes.status === 'active') {
+           await updateSearchIndex(record);
+         }
+       },
+     },
+   });
+   ```
+
+3. ### Implement shopping cart
+
+   ```tsx title="hooks/use-cart.ts"
+   'use client';
+
+   import { create } from 'zustand';
+   import { persist } from 'zustand/middleware';
+
+   interface CartItem {
+     id: string;
+     productId: string;
+     variantId?: string;
+     name: string;
+     price: number;
+     quantity: number;
+     image: string;
+     options?: Record<string, string>;
+   }
+
+   interface CartStore {
+     items: CartItem[];
+     addItem: (item: Omit<CartItem, 'id'>) => void;
+     removeItem: (id: string) => void;
+     updateQuantity: (id: string, quantity: number) => void;
+     clearCart: () => void;
+     getTotalPrice: () => number;
+     getTotalItems: () => number;
+   }
+
+   export const useCart = create<CartStore>()(
+     persist(
+       (set, get) => ({
+         items: [],
+
+         addItem: (newItem) => {
+           const items = get().items;
+           const itemId = `${newItem.productId}-${newItem.variantId || 'default'}`;
+
+           const existingItem = items.find((item) => item.id === itemId);
+
+           if (existingItem) {
+             set({
+               items: items.map((item) =>
+                 item.id === itemId
+                   ? { ...item, quantity: item.quantity + newItem.quantity }
+                   : item,
+               ),
+             });
+           } else {
+             set({
+               items: [...items, { ...newItem, id: itemId }],
+             });
+           }
+         },
+
+         removeItem: (id) => {
+           set({
+             items: get().items.filter((item) => item.id !== id),
+           });
+         },
+
+         updateQuantity: (id, quantity) => {
+           if (quantity <= 0) {
+             get().removeItem(id);
+             return;
+           }
+
+           set({
+             items: get().items.map((item) =>
+               item.id === id ? { ...item, quantity } : item,
+             ),
+           });
+         },
+
+         clearCart: () => {
+           set({ items: [] });
+         },
+
+         getTotalPrice: () => {
+           return get().items.reduce(
+             (total, item) => total + item.price * item.quantity,
+             0,
+           );
+         },
+
+         getTotalItems: () => {
+           return get().items.reduce((total, item) => total + item.quantity, 0);
+         },
+       }),
+       {
+         name: 'cart-storage',
+       },
+     ),
+   );
+   ```
+
+4. ### Create product pages
+
+   ```tsx title="app/products/[slug]/page.tsx"
+   import { notFound } from 'next/navigation';
+   import { scalar } from '@/lib/scalar';
+   import { ProductGallery } from '@/components/product-gallery';
+   import { AddToCart } from '@/components/add-to-cart';
+   import { ProductReviews } from '@/components/product-reviews';
+   import { RelatedProducts } from '@/components/related-products';
+
+   interface ProductPageProps {
+     params: { slug: string };
+   }
+
+   export default async function ProductPage({ params }: ProductPageProps) {
+     const product = await scalar.content.findOne({
+       model: 'product',
+       filter: {
+         slug: params.slug,
+         status: 'active',
+       },
+       populate: ['categories', 'images'],
+     });
+
+     if (!product) {
+       notFound();
+     }
+
+     const relatedProducts = await scalar.content.findMany({
+       model: 'product',
+       filter: {
+         status: 'active',
+         id: { $ne: product.id },
+         categories: { $in: product.categories.map((c) => c.id) },
+       },
+       limit: 4,
+       populate: ['images'],
+     });
+
+     return (
+       <div className="container mx-auto px-4 py-8">
+         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+           <ProductGallery images={product.images} />
+
+           <div>
+             <div className="mb-4">
+               {product.categories.map((category) => (
+                 <span
+                   key={category.id}
+                   className="text-sm text-gray-500 hover:text-gray-700"
+                 >
+                   {category.name}
+                 </span>
+               ))}
+             </div>
+
+             <h1 className="mb-4 text-3xl font-bold">{product.name}</h1>
+
+             <div className="mb-6 flex items-center gap-4">
+               <span className="text-3xl font-bold">
+                 ${product.pricing.price}
+               </span>
+               {product.pricing.comparePrice && (
+                 <span className="text-xl text-gray-500 line-through">
+                   ${product.pricing.comparePrice}
+                 </span>
+               )}
+             </div>
+
+             {product.shortDescription && (
+               <p className="mb-6 text-gray-600">{product.shortDescription}</p>
+             )}
+
+             <AddToCart product={product} />
+
+             {product.description && (
+               <div className="prose mt-8 max-w-none">
+                 <h3>Description</h3>
+                 <div
+                   dangerouslySetInnerHTML={{ __html: product.description }}
+                 />
+               </div>
+             )}
+           </div>
+         </div>
+
+         <ProductReviews productId={product.id} />
+
+         <RelatedProducts products={relatedProducts} />
+       </div>
+     );
+   }
+   ```
+
+5. ### Implement checkout with Stripe
+
+   ```tsx title="app/checkout/page.tsx"
+   'use client';
+
+   import { useState } from 'react';
+   import { loadStripe } from '@stripe/stripe-js';
+   import { useCart } from '@/hooks/use-cart';
+
+   const stripePromise = loadStripe(
+     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+   );
+
+   export default function CheckoutPage() {
+     const [loading, setLoading] = useState(false);
+     const { items, getTotalPrice, clearCart } = useCart();
+
+     const handleCheckout = async () => {
+       setLoading(true);
+
+       try {
+         const response = await fetch('/api/checkout', {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ items }),
+         });
+
+         const { sessionId } = await response.json();
+
+         const stripe = await stripePromise;
+         const { error } = await stripe!.redirectToCheckout({ sessionId });
+
+         if (error) {
+           console.error('Stripe error:', error);
+         }
+       } catch (error) {
+         console.error('Checkout error:', error);
+       } finally {
+         setLoading(false);
+       }
+     };
+
+     return (
+       <div className="container mx-auto px-4 py-8">
+         <h1 className="mb-8 text-3xl font-bold">Checkout</h1>
+
+         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+           <div>
+             <h2 className="mb-4 text-xl font-semibold">Order Summary</h2>
+
+             {items.map((item) => (
+               <div
+                 key={item.id}
+                 className="flex items-center gap-4 border-b py-4"
+               >
+                 <img
+                   src={item.image}
+                   alt={item.name}
+                   className="h-16 w-16 rounded object-cover"
+                 />
+                 <div className="flex-1">
+                   <h3 className="font-medium">{item.name}</h3>
+                   <p className="text-gray-500">Quantity: {item.quantity}</p>
+                 </div>
+                 <span className="font-semibold">
+                   ${(item.price * item.quantity).toFixed(2)}
+                 </span>
+               </div>
+             ))}
+
+             <div className="py-4">
+               <div className="flex justify-between text-xl font-bold">
+                 <span>Total</span>
+                 <span>${getTotalPrice().toFixed(2)}</span>
+               </div>
+             </div>
+           </div>
+
+           <div>
+             <button
+               onClick={handleCheckout}
+               disabled={loading || items.length === 0}
+               className="w-full rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+             >
+               {loading ? 'Processing...' : 'Proceed to Payment'}
+             </button>
+           </div>
+         </div>
+       </div>
+     );
+   }
+   ```
+
+</Steps>
+
+## Best Practices
+
+### Performance Optimization
+
+<Tabs>
+  <TabItem label="Database">
+    ```typescript
+    // Use proper indexing for frequently queried fields
+    export const blogPost = defineModel({
+      name: 'blogPost',
+      fields: {
+        status: { type: 'select', indexed: true },
+        publishedAt: { type: 'datetime', indexed: true },
+        slug: { type: 'slug', indexed: true, unique: true },
+      },
+    });
+
+    // Use select to limit returned fields
+    const posts = await scalar.content.findMany({
+      model: 'blogPost',
+      select: ['id', 'title', 'slug', 'excerpt'],
+      filter: { status: 'published' },
+    });
+
+    // Use pagination to limit result sets
+    const posts = await scalar.content.findMany({
+      model: 'blogPost',
+      limit: 20,
+      offset: page * 20,
+    });
+    ```
+
+  </TabItem>
+  
+  <TabItem label="Caching">
+    ```typescript
+    // Cache frequently accessed data
+    import { cache } from '@/lib/cache';
+
+    export async function getCachedPosts() {
+      const cacheKey = 'blog:published-posts';
+
+      let posts = await cache.get(cacheKey);
+
+      if (!posts) {
+        posts = await scalar.content.findMany({
+          model: 'blogPost',
+          filter: { status: 'published' },
+          sort: '-publishedAt',
+          limit: 10,
+        });
+
+        await cache.set(cacheKey, posts, 300); // 5 minutes
+      }
+
+      return posts;
+    }
+
+    // Invalidate cache when content changes
+    export const blogPost = defineModel({
+      hooks: {
+        afterCreate: async () => {
+          await cache.del('blog:published-posts');
+        },
+        afterUpdate: async () => {
+          await cache.del('blog:published-posts');
+        },
+      },
+    });
+    ```
+
+  </TabItem>
+  
+  <TabItem label="Images">
+    ```typescript
+    // Optimize image delivery
+    export const product = defineModel({
+      fields: {
+        featuredImage: {
+          type: 'image',
+          transforms: [
+            { width: 400, height: 300, format: 'webp', quality: 80 },
+            { width: 800, height: 600, format: 'webp', quality: 80 },
+            { width: 1200, height: 900, format: 'webp', quality: 80 },
+          ],
+        },
+      },
+    });
+
+    // Use Next.js Image component
+    import Image from 'next/image';
+
+    <Image
+      src={product.featuredImage.transforms[0].url}
+      alt={product.name}
+      width={400}
+      height={300}
+      placeholder="blur"
+      blurDataURL="data:image/jpeg;base64,..."
+    />
+    ```
+
+  </TabItem>
+  
+  <TabItem label="Code Splitting">
+    ```typescript
+    // Lazy load heavy components
+    import dynamic from 'next/dynamic';
+
+    const RichTextEditor = dynamic(
+      () => import('@/components/rich-text-editor'),
+      {
+        ssr: false,
+        loading: () => <div>Loading editor...</div>,
+      }
+    );
+
+    // Split admin components
+    const AdminDashboard = dynamic(
+      () => import('@/components/admin-dashboard'),
+      { ssr: false }
+    );
+    ```
+
+  </TabItem>
+</Tabs>
+
+### Security Best Practices
+
+```typescript
+// Input validation
+export const blogPost = defineModel({
+  fields: {
+    title: {
+      type: 'text',
+      validation: {
+        minLength: 1,
+        maxLength: 200,
+        pattern: /^[a-zA-Z0-9\s\-_.,!?]+$/,
+      },
+    },
+    content: {
+      type: 'richtext',
+      sanitize: true,
+      allowedTags: ['p', 'strong', 'em', 'ul', 'ol', 'li'],
+    },
+  },
+});
+
+// Rate limiting
+export default defineConfig({
+  api: {
+    rateLimit: {
+      windowMs: 15 * 60 * 1000,
+      max: 100,
+    },
+  },
+});
+
+// Authentication & authorization
+export const blogPost = defineModel({
+  permissions: {
+    create: ['admin', 'editor'],
+    read: ['admin', 'editor', 'viewer'],
+    update: ['admin', 'editor'],
+    delete: ['admin'],
+  },
+});
+```
+
+<Aside type="tip">
+  These guides provide a solid foundation, but remember to adapt them to your
+  specific requirements and use cases.
+</Aside>

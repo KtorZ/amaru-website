@@ -1,0 +1,487 @@
+---
+title: Configuration
+description: Learn how to configure Scalar for your project needs
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+## Basic Configuration
+
+Create a `scalar.config.ts` file in your project root:
+
+```typescript title="scalar.config.ts"
+import { defineConfig } from '@scalar/core';
+
+export default defineConfig({
+  // Database configuration
+  database: {
+    url: process.env.DATABASE_URL,
+  },
+
+  // Admin panel configuration
+  admin: {
+    enabled: true,
+    path: '/admin',
+    title: 'My CMS',
+  },
+
+  // API configuration
+  api: {
+    path: '/api',
+    cors: {
+      origin: ['http://localhost:3000'],
+    },
+  },
+
+  // Authentication configuration
+  auth: {
+    providers: ['email', 'github'],
+    secret: process.env.SCALAR_SECRET,
+  },
+});
+```
+
+## Environment Variables
+
+Configure these environment variables for your application:
+
+```bash title=".env"
+# Database
+DATABASE_URL="postgresql://username:password@localhost:5432/mydb"
+
+# Security
+SCALAR_SECRET="your-very-secure-secret-key"
+JWT_SECRET="your-jwt-secret"
+
+# External Services
+GITHUB_CLIENT_ID="your-github-client-id"
+GITHUB_CLIENT_SECRET="your-github-client-secret"
+
+# Email (optional)
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"
+
+# File Storage (optional)
+AWS_ACCESS_KEY_ID="your-aws-access-key"
+AWS_SECRET_ACCESS_KEY="your-aws-secret-key"
+AWS_S3_BUCKET="your-s3-bucket"
+AWS_REGION="us-east-1"
+```
+
+## Content Models
+
+Define your content structure using TypeScript-like syntax:
+
+```typescript title="schema/blog.ts"
+import { defineModel } from '@scalar/core';
+
+export const blogPost = defineModel({
+  name: 'blogPost',
+  label: 'Blog Post',
+  description: 'Blog posts for the website',
+
+  fields: {
+    title: {
+      type: 'text',
+      required: true,
+      label: 'Title',
+      description: 'The blog post title',
+    },
+
+    slug: {
+      type: 'slug',
+      source: 'title',
+      required: true,
+      unique: true,
+    },
+
+    content: {
+      type: 'richtext',
+      required: true,
+      label: 'Content',
+    },
+
+    excerpt: {
+      type: 'textarea',
+      label: 'Excerpt',
+      description: 'Short description of the post',
+    },
+
+    featuredImage: {
+      type: 'image',
+      label: 'Featured Image',
+    },
+
+    author: {
+      type: 'relationship',
+      model: 'user',
+      label: 'Author',
+    },
+
+    categories: {
+      type: 'relationship',
+      model: 'category',
+      multiple: true,
+      label: 'Categories',
+    },
+
+    tags: {
+      type: 'array',
+      of: 'text',
+      label: 'Tags',
+    },
+
+    publishedAt: {
+      type: 'datetime',
+      label: 'Published At',
+      defaultValue: () => new Date(),
+    },
+
+    status: {
+      type: 'select',
+      options: ['draft', 'published', 'archived'],
+      defaultValue: 'draft',
+      label: 'Status',
+    },
+
+    featured: {
+      type: 'boolean',
+      label: 'Featured Post',
+      defaultValue: false,
+    },
+
+    metadata: {
+      type: 'json',
+      label: 'Metadata',
+      description: 'Additional metadata for SEO',
+    },
+  },
+
+  // Configuration options
+  timestamps: true,
+  softDelete: true,
+
+  // Permissions
+  permissions: {
+    create: ['admin', 'editor'],
+    read: ['admin', 'editor', 'viewer'],
+    update: ['admin', 'editor'],
+    delete: ['admin'],
+  },
+
+  // Hooks
+  hooks: {
+    beforeCreate: async (data) => {
+      if (!data.slug) {
+        data.slug = slugify(data.title);
+      }
+    },
+
+    afterCreate: async (record) => {
+      // Send notifications, update search index, etc.
+    },
+  },
+});
+```
+
+## Field Types
+
+Scalar supports various field types for flexible content modeling:
+
+### Basic Types
+
+```typescript
+// Text fields
+title: { type: 'text' }
+slug: { type: 'slug', source: 'title' }
+content: { type: 'textarea' }
+richContent: { type: 'richtext' }
+
+// Numbers
+price: { type: 'number', min: 0 }
+rating: { type: 'float', min: 0, max: 5 }
+
+// Boolean
+published: { type: 'boolean', defaultValue: false }
+
+// Dates
+createdAt: { type: 'datetime' }
+publishDate: { type: 'date' }
+```
+
+### Advanced Types
+
+```typescript
+// Select dropdown
+status: {
+  type: 'select',
+  options: ['draft', 'published', 'archived'],
+  multiple: false
+}
+
+// File uploads
+image: { type: 'image', maxSize: '5MB' }
+document: { type: 'file', accept: ['.pdf', '.doc'] }
+
+// Relationships
+author: { type: 'relationship', model: 'user' }
+categories: { type: 'relationship', model: 'category', multiple: true }
+
+// Arrays and objects
+tags: { type: 'array', of: 'text' }
+metadata: { type: 'json' }
+
+// Location
+location: { type: 'geo' }
+```
+
+## Admin Panel Customization
+
+Customize the admin interface:
+
+```typescript title="scalar.config.ts"
+export default defineConfig({
+  admin: {
+    enabled: true,
+    path: '/admin',
+    title: 'My CMS Admin',
+    logo: '/logo.png',
+
+    // Theme customization
+    theme: {
+      primaryColor: '#3b82f6',
+      darkMode: 'auto', // 'light', 'dark', 'auto'
+    },
+
+    // Navigation
+    navigation: [
+      {
+        label: 'Content',
+        items: [
+          { model: 'blogPost', label: 'Blog Posts' },
+          { model: 'page', label: 'Pages' },
+        ],
+      },
+      {
+        label: 'Media',
+        items: [{ path: '/admin/media', label: 'Media Library' }],
+      },
+    ],
+
+    // Dashboard widgets
+    dashboard: {
+      widgets: ['recent-content', 'analytics', 'quick-actions'],
+    },
+  },
+});
+```
+
+## API Configuration
+
+Configure the API behavior:
+
+```typescript title="scalar.config.ts"
+export default defineConfig({
+  api: {
+    path: '/api',
+
+    // CORS configuration
+    cors: {
+      origin: ['http://localhost:3000', 'https://mysite.com'],
+      credentials: true,
+    },
+
+    // Rate limiting
+    rateLimit: {
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 100, // requests per window
+    },
+
+    // Pagination defaults
+    pagination: {
+      defaultLimit: 20,
+      maxLimit: 100,
+    },
+
+    // Custom routes
+    routes: {
+      // Override default routes
+      'GET /api/posts': './routes/custom-posts.ts',
+    },
+  },
+});
+```
+
+## Authentication Setup
+
+Configure authentication providers:
+
+<Tabs>
+  <TabItem label="Email">
+    ```typescript
+    auth: {
+      providers: ['email'],
+      email: {
+        smtp: {
+          host: process.env.SMTP_HOST,
+          port: process.env.SMTP_PORT,
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+        from: 'noreply@mysite.com',
+        templates: {
+          signin: './templates/signin-email.html',
+          welcome: './templates/welcome-email.html',
+        },
+      },
+    }
+    ```
+  </TabItem>
+  
+  <TabItem label="GitHub">
+    ```typescript
+    auth: {
+      providers: ['github'],
+      github: {
+        clientId: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        scope: ['user:email'],
+      },
+    }
+    ```
+  </TabItem>
+  
+  <TabItem label="Google">
+    ```typescript
+    auth: {
+      providers: ['google'],
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        scope: ['email', 'profile'],
+      },
+    }
+    ```
+  </TabItem>
+  
+  <TabItem label="Custom">
+    ```typescript
+    auth: {
+      providers: ['custom'],
+      custom: {
+        name: 'LDAP',
+        authenticate: async (credentials) => {
+          // Custom authentication logic
+          const user = await authenticateWithLDAP(credentials);
+          return user;
+        },
+      },
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## File Storage
+
+Configure file storage options:
+
+```typescript title="scalar.config.ts"
+export default defineConfig({
+  storage: {
+    default: 's3', // 'local', 's3', 'gcs', 'azure'
+
+    drivers: {
+      local: {
+        root: './uploads',
+        serve: true,
+        serveUrl: '/uploads',
+      },
+
+      s3: {
+        bucket: process.env.AWS_S3_BUCKET,
+        region: process.env.AWS_REGION,
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        cdnUrl: 'https://cdn.mysite.com',
+      },
+    },
+  },
+});
+```
+
+## Performance Configuration
+
+Optimize performance with caching and other settings:
+
+```typescript title="scalar.config.ts"
+export default defineConfig({
+  cache: {
+    enabled: true,
+    driver: 'redis', // 'memory', 'redis'
+    redis: {
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+    },
+    ttl: 3600, // seconds
+  },
+
+  // Database optimization
+  database: {
+    url: process.env.DATABASE_URL,
+    pool: {
+      min: 2,
+      max: 10,
+    },
+    debug: process.env.NODE_ENV === 'development',
+  },
+});
+```
+
+<Aside type="tip">
+  For production deployments, consider setting up Redis for caching and session
+  storage for better performance.
+</Aside>
+
+## Framework-Specific Configuration
+
+### Next.js
+
+```javascript title="next.config.js"
+const { withScalar } = require('@scalar/next');
+
+module.exports = withScalar({
+  // Next.js config
+  experimental: {
+    appDir: true,
+  },
+
+  // Scalar-specific config
+  scalar: {
+    adminPath: '/admin',
+    apiPath: '/api',
+  },
+});
+```
+
+### Nuxt.js
+
+```typescript title="nuxt.config.ts"
+export default defineNuxtConfig({
+  modules: ['@scalar/nuxt'],
+
+  scalar: {
+    adminPath: '/admin',
+    apiPath: '/api',
+    ssr: true,
+  },
+});
+```
+
+<Aside type="caution">
+  Remember to restart your development server after making configuration
+  changes.
+</Aside>
