@@ -538,13 +538,11 @@ describe('/api/webhook', () => {
 ### Common Issues
 
 1. **Webhook not firing**
-
    - Check webhook configuration
    - Verify model names match exactly
    - Ensure events are configured correctly
 
 2. **Invalid signature errors**
-
    - Verify webhook secret matches configuration
    - Check signature generation algorithm
    - Ensure raw body is used for signature verification

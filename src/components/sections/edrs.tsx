@@ -18,24 +18,16 @@ import { cn } from '@/lib/utils';
 
 type Category = 'All' | 'Architecture' | 'Process';
 
-const categories: Category[] = [
-  'All',
-  'Architecture',
-  'Process',
-];
+const categories: Category[] = ['All', 'Architecture', 'Process'];
 
 const types = {
-  'Architecture': 'architecture',
-  'Process': 'process',
+  Architecture: 'architecture',
+  Process: 'process',
 };
 
 const POSTS_PER_PAGE = 30;
 
-export default function Edrs({
-  edrs,
-}: {
-  edrs: EdrData[];
-}) {
+export default function Edrs({ edrs }: { edrs: EdrData[] }) {
   const [activeCategory, setActiveCategory] = useState<Category>('All');
   const [visiblePosts, setVisiblePosts] = useState(POSTS_PER_PAGE);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,7 +66,7 @@ export default function Edrs({
   return (
     <section className="container">
       <div>
-        <div className="bordered-div-padding border-[#30e2a3] border-b border-x">
+        <div className="bordered-div-padding border-x border-b border-[#30e2a3]">
           <h1 className="font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl">
             Engineering Decision Records
           </h1>
@@ -97,7 +89,7 @@ export default function Edrs({
           </div>
         </div>
 
-        <div className="bordered-div-padding hidden border-[#30d0b1] border-x border-b md:block">
+        <div className="bordered-div-padding hidden border-x border-b border-[#30d0b1] md:block">
           <Tabs
             value={activeCategory}
             onValueChange={(value) => handleCategoryChange(value as Category)}
@@ -112,7 +104,7 @@ export default function Edrs({
           </Tabs>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 border-x border-[#30bcc2]">
+        <div className="grid grid-cols-1 border-x border-[#30bcc2] md:grid-cols-2">
           {visiblePostsList.map((edr, index) => {
             // Determine if this is in the last row
             const isLastRow =
@@ -148,7 +140,7 @@ export default function Edrs({
         </div>
 
         {filteredPosts.length > 0 && (
-          <div className="bordered-div-padding flex flex-col items-center justify-center gap-4 border-[#31a2d8] border text-center">
+          <div className="bordered-div-padding flex flex-col items-center justify-center gap-4 border border-[#31a2d8] text-center">
             {hasMorePosts && (
               <Button
                 variant="outline"
@@ -186,13 +178,7 @@ export default function Edrs({
   );
 }
 
-function EdrItem({
-  edr,
-  className,
-}: {
-  edr: EdrData;
-  className?: string;
-}) {
+function EdrItem({ edr, className }: { edr: EdrData; className?: string }) {
   return (
     <a
       href={`/edrs/${edr.id}`}
@@ -203,8 +189,14 @@ function EdrItem({
     >
       <div className="">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-secondary text-sm font-medium md:text-base">{edr.data.type}</span>
-          <span className={`text-muted-foreground text-sm ${edr.data.status === "rejected" ? "text-red-200" : ""}`}>{edr.data.status}</span>
+          <span className="text-secondary text-sm font-medium md:text-base">
+            {edr.data.type}
+          </span>
+          <span
+            className={`text-muted-foreground text-sm ${edr.data.status === 'rejected' ? 'text-red-200' : ''}`}
+          >
+            {edr.data.status}
+          </span>
         </div>
         <h2 className="font-weight-display mt-4 text-base leading-snug tracking-tighter md:text-xl">
           {edr.id}

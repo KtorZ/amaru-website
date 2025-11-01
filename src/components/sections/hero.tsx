@@ -3,16 +3,16 @@
 import { ArrowRight } from 'lucide-react';
 import { FaDiscord, FaDownload } from 'react-icons/fa6';
 
-import { SITE_METADATA } from '@/consts';
 import { Button } from '@/components/ui/button';
 import { MovingBorder } from '@/components/ui/moving-border';
+import { SITE_METADATA } from '@/consts';
 import { cn } from '@/lib/utils';
 
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="container">
-        <div className="bordered-div-padding relative flex flex-col items-center gap-8 border-x border-x-[#30e2a3] text-center md:gap-10 lg:gap-16 lg:!py-25 bg-[url(images/landing/hero-alt.webp)]">
+        <div className="bordered-div-padding relative flex flex-col items-center gap-8 border-x border-x-[#30e2a3] bg-[url(images/landing/hero-alt.webp)] text-center md:gap-10 lg:gap-16 lg:!py-25">
           {/* Main Heading */}
           <div className="max-w-4xl space-y-6 md:space-y-8 lg:space-y-12">
             {/* Beta Banner */}
@@ -37,15 +37,20 @@ export function Hero() {
                 <ArrowRight className="ml-1" />
               </Button>
             </a>
-            <h1 className="text-white drop-shadow-md font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl">
+            <h1 className="font-weight-display text-2xl leading-snug tracking-tighter text-white drop-shadow-md md:text-3xl lg:text-5xl">
               An Open Source Cardano client{' '}
               <span className="block">written in Rust.</span>
             </h1>
-            <p className="bg-black/20 p-4 rounded backdrop-blur-[1px] text-gray-100 mx-auto max-w-[700px] text-sm leading-relaxed md:text-lg lg:text-xl">
-              Amaru is an open-source project implementing a new fully interoperable block-producing node for Cardano. It aims to improve the network's overall accessibility and robustness without compromising its safety and security.
+            <p className="mx-auto max-w-[700px] rounded bg-black/20 p-4 text-sm leading-relaxed text-gray-100 backdrop-blur-[1px] md:text-lg lg:text-xl">
+              Amaru is an open-source project implementing a new fully
+              interoperable block-producing node for Cardano. It aims to improve
+              the network's overall accessibility and robustness without
+              compromising its safety and security.
             </p>
-            <p className="bg-black/20 p-4 rounded backdrop-blur-[1px] text-gray-100 mx-auto max-w-[700px] text-sm leading-relaxed md:text-lg lg:text-xl">
-              It provides another perspective and solution for stake pool operators and developers alike, prioritizing a modular approach, a seamless user experience, and low hardware requirements.
+            <p className="mx-auto max-w-[700px] rounded bg-black/20 p-4 text-sm leading-relaxed text-gray-100 backdrop-blur-[1px] md:text-lg lg:text-xl">
+              It provides another perspective and solution for stake pool
+              operators and developers alike, prioritizing a modular approach, a
+              seamless user experience, and low hardware requirements.
             </p>
           </div>
 
@@ -78,7 +83,7 @@ export function Hero() {
         </div>
       </div>
       <div className="container">
-        <div className="bordered-div-padding border-x-[#30d0b1] border-t-[#30d0b1] border-b-[#30bcc2] flex items-center justify-center border">
+        <div className="bordered-div-padding flex items-center justify-center border border-x-[#30d0b1] border-t-[#30d0b1] border-b-[#30bcc2]">
           <img
             src="/images/landing/hero.webp"
             alt="Hero Image"

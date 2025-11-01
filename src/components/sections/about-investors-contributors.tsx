@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 import { Handshake, HeartHandshake } from 'lucide-react';
-import { Meteors } from '@/components/magicui/meteors';
+
 import { SITE_METADATA } from '../../consts.ts';
+
+import { Meteors } from '@/components/magicui/meteors';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // const investors = [
 //   {
@@ -55,7 +58,7 @@ export function AboutInvestorsContributors({ contributors }: Props) {
 
       {/* Contributors Section */}
       <section className="container">
-        <div className="bordered-div-padding border border-[#31a2d8] border-t-0">
+        <div className="bordered-div-padding border border-t-0 border-[#31a2d8]">
           <div className="space-y-6 md:space-y-8 lg:space-y-10">
             <h2 className="text-muted-foreground flex items-center gap-2 text-sm leading-snug font-medium md:text-base">
               <HeartHandshake className="size-5" />
@@ -70,7 +73,7 @@ export function AboutInvestorsContributors({ contributors }: Props) {
                   className="group flex flex-col gap-1"
                   target="_blank"
                 >
-                  <div className="group flex gap-2 items-center">
+                  <div className="group flex items-center gap-2">
                     <Avatar className="size-6 md:size-8">
                       <AvatarImage
                         src={contributor.avatar}

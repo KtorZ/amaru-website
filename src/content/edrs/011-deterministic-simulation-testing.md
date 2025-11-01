@@ -7,7 +7,7 @@ status: accepted
 
 ## Context
 
-Testing and debugging distributed systems is difficult. 
+Testing and debugging distributed systems is difficult.
 
 One of the main contributing factors to the problem of testing is that there
 are so many failure modes, which results in a combinatorial explosion of states
@@ -31,16 +31,16 @@ deterministically reproduce it from some seed.
 
 To tackle the problem of testing and debugging we've introduced two changes:
 
-  1. Introduced a library, called pure-stage, for building parallel processing
-     networks that can be run in a completely deterministic fashion. The idea
-     being that the whole node-internal processing network will be ported from
-     using gasket (which wasn't designed with determinism in mind) to
-     pure-stage;
+1. Introduced a library, called pure-stage, for building parallel processing
+   networks that can be run in a completely deterministic fashion. The idea
+   being that the whole node-internal processing network will be ported from
+   using gasket (which wasn't designed with determinism in mind) to
+   pure-stage;
 
-  2. A discrete-event simulator which spawns a network of nodes and simulates
-     the network connections between them. The simulator decides when, or if,
-     messages get delivered to the nodes and can step through the execution
-     deterministically using the pure-stage API.
+2. A discrete-event simulator which spawns a network of nodes and simulates
+   the network connections between them. The simulator decides when, or if,
+   messages get delivered to the nodes and can step through the execution
+   deterministically using the pure-stage API.
 
 ## Discussion points
 
@@ -53,7 +53,7 @@ One complication to both making the node deterministic and simulation testing
 it is the fact that the processing of incoming messages happens in a parallel
 pipeline. So the trick of implementing the system as a state machine of type:
 
-  (input, state) -> (output, state)
+(input, state) -> (output, state)
 
 doesn't quite work. One rather needs to implement it as several state machines
 (that can run in parallel) connected with queues. Further complications arise
@@ -89,19 +89,19 @@ say.
 
 Here's a sketch of the algorithm for the simulator:
 
-  1. The simulation heap starts out with external input messages, each paired
-     with an arrival time and a target node;
-  2. Each node is polled for the next time at which something would occur
-     internally; the node is also inserted into the simulation heap with that
-     time;
-  3. The simulator pops the task with the smallest time from the heap (message
-     delivery or internal node action) and performs it; this may enqueue
-     messages for other nodes that cause them to be woken up sooner than dictated
-     by their current position in the heap — if so, remove and re-insert;
-  4. That node is then queried for the next interesting time and inserted back
-     into the heap with that time;
-  5. The simulator starts over from 3 (unless some stop condition is
-     satisfied).
+1. The simulation heap starts out with external input messages, each paired
+   with an arrival time and a target node;
+2. Each node is polled for the next time at which something would occur
+   internally; the node is also inserted into the simulation heap with that
+   time;
+3. The simulator pops the task with the smallest time from the heap (message
+   delivery or internal node action) and performs it; this may enqueue
+   messages for other nodes that cause them to be woken up sooner than dictated
+   by their current position in the heap — if so, remove and re-insert;
+4. That node is then queried for the next interesting time and inserted back
+   into the heap with that time;
+5. The simulator starts over from 3 (unless some stop condition is
+   satisfied).
 
 So the API should be something like:
 
@@ -136,10 +136,10 @@ aspects below.
 
 Messages between nodes can be subject to the following:
 
-* Loss (due to network partition)
-* Duplication
-* Latency
-* Reordering (consequence of latency)
+- Loss (due to network partition)
+- Duplication
+- Latency
+- Reordering (consequence of latency)
 
 It's possible to simulate all these conditions in the simulator, because it has
 access to all the messages that are supposed to be delivered to every node.
@@ -151,37 +151,37 @@ to the nature of nodes being connected via the network, there are many other
 things that can go wrong. Following the literature on distributed systems,
 we'll split these faults up in two categories:
 
-  1. Crash faults, where things just go wrong;
-  2. Byzantine faults, where potentially compromised nodes or other
-     actors on the network maliciously tries break things.
+1. Crash faults, where things just go wrong;
+2. Byzantine faults, where potentially compromised nodes or other
+   actors on the network maliciously tries break things.
 
 #### Crash faults
 
 Crash faults have not been implemented yet, but here's a list of them and a
 sketch of how to implement them:
 
-* Node crashes and restarts (loss of volatile memory). The simulator spawns
+- Node crashes and restarts (loss of volatile memory). The simulator spawns
   nodes, so implementing crashes and restarts can be done by dropping and
   respawning a node;
 
-* I/O and GC pauses. Rust doesn't have GC, but disk I/O can sometimes be slower
+- I/O and GC pauses. Rust doesn't have GC, but disk I/O can sometimes be slower
   than normal due to other stuff happening on the computer that the node is
   running on. I/O pauses can be implemented at the pure-stage level by delaying
   when a future becomes available;
 
-* Time skews (the clock of nodes drifts apart). The simulator controls the
+- Time skews (the clock of nodes drifts apart). The simulator controls the
   clock of the nodes, via pure-stage's API, so skews can be implemented by
   advancing some node's clocks more than others;
 
-* Disk failures (since all of our stable storage is delegated to RocksDB we
+- Disk failures (since all of our stable storage is delegated to RocksDB we
   inherit its storage failure model). To test this the simulator can inject the
   following disk faults on nodes:
-    - Delete the whole database;
-    - Flip bits in the database;
-    - Truncate the write-ahead-log of the database (to simulate a crash where
-      the last entry wasn't fully fsynced to disk). For more details, see
-      [Protocol-Aware Recovery for Consensus-Based Distributed
-      Storage](https://dl.acm.org/doi/10.1145/3241062).
+  - Delete the whole database;
+  - Flip bits in the database;
+  - Truncate the write-ahead-log of the database (to simulate a crash where
+    the last entry wasn't fully fsynced to disk). For more details, see
+    [Protocol-Aware Recovery for Consensus-Based Distributed
+    Storage](https://dl.acm.org/doi/10.1145/3241062).
 
 #### Byzantine faults
 
@@ -280,7 +280,7 @@ Some differences that may or may not motivate the double effort:
 3. Antithesis doesn't support for example disk faults currently;
 
 4. Good system architecture and being easy to test locally (i.e. with `cargo
-   test`) goes hand in hand. The efforts described above leads to for example
+test`) goes hand in hand. The efforts described above leads to for example
    being able to write a unit test for a regression test involving a whole network
    of nodes and faults, which is something that would not been possible if the
    system had not been made deterministic (and solely relied on Antithesis for

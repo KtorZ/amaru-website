@@ -58,7 +58,7 @@ Define the newtype using a [transparent](https://doc.rust-lang.org/nomicon/other
 pub struct Slot(u64);
 ```
 
-Provide dedicated methods to  manipulate the newtype in a domain-specific way.
+Provide dedicated methods to manipulate the newtype in a domain-specific way.
 
 ```rust
 impl Slot {

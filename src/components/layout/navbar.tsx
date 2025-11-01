@@ -13,6 +13,8 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { FaDiscord, FaGithub } from 'react-icons/fa6';
 
+import { SITE_METADATA } from '../../consts.ts';
+
 import { ThemeToggle } from '@/components/elements/theme-toggle';
 import Logo from '@/components/layout/logo';
 import { Button } from '@/components/ui/button';
@@ -27,7 +29,6 @@ import {
 } from '@/components/ui/navigation-menu';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { cn } from '@/lib/utils';
-import { SITE_METADATA } from '../../consts.ts';
 
 type NavItem = {
   title: string;
@@ -67,9 +68,9 @@ const navigationItems: NavItem[] = [
           {
             title: 'Amaru Treasury',
             href: 'https://github.com/pragma-org/amaru-treasury',
-            description: 'A smart contract for managing Amaru\'s treasury',
+            description: "A smart contract for managing Amaru's treasury",
             icon: Coins,
-          }
+          },
         ],
       },
       {
@@ -84,7 +85,8 @@ const navigationItems: NavItem[] = [
           {
             title: 'Nawi',
             href: 'https://github.com/SundaeSwap-finance/nawi',
-            description: 'A CLI providing useful and human readable insights about Cardano objects',
+            description:
+              'A CLI providing useful and human readable insights about Cardano objects',
             icon: Binoculars,
           },
           {
@@ -166,7 +168,7 @@ function Navbar({ currentPage }: NavbarProps) {
   return (
     <header
       className={cn(
-        'border-b transition-all duration-300 border-b-[#30e2a3]',
+        'border-b border-b-[#30e2a3] transition-all duration-300',
         isMenuColorInverted
           ? theme === 'dark'
             ? 'light bg-foreground text-background [&_*]:border-border/30'
@@ -319,7 +321,7 @@ const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
 function formatCompact(n: number) {
   try {
-    return new Intl.NumberFormat("en", { notation: "compact" }).format(n);
+    return new Intl.NumberFormat('en', { notation: 'compact' }).format(n);
   } catch {
     // super-safe fallback
     if (n >= 1_000_000) return `${Math.round(n / 100_000) / 10}M`;
@@ -327,7 +329,6 @@ function formatCompact(n: number) {
     return String(n);
   }
 }
-
 
 const NavBarAction = ({
   setIsMenuOpen,
@@ -344,7 +345,11 @@ const NavBarAction = ({
       const raw = localStorage.getItem(LS_KEY);
       if (raw) {
         const { count, ts } = JSON.parse(raw) as { count: number; ts: number };
-        if (Number.isFinite(ts) && Date.now() - ts < ONE_DAY_MS && Number.isFinite(count)) {
+        if (
+          Number.isFinite(ts) &&
+          Date.now() - ts < ONE_DAY_MS &&
+          Number.isFinite(count)
+        ) {
           setStars(count);
         }
       }
@@ -370,20 +375,27 @@ const NavBarAction = ({
       try {
         const res = await fetch(API_URL, {
           // avoid serving a potentially stale intermediary cache
-          cache: "no-store",
+          cache: 'no-store',
           headers: {
-            Accept: "application/vnd.github+json",
+            Accept: 'application/vnd.github+json',
           },
         });
         if (!res.ok) throw new Error(`GitHub API ${res.status}`);
         const data = await res.json();
         let count = Number(data?.stargazers_count);
-        if (!Number.isFinite(count)) { return; }
-        if (!cancelled) { setStars(count); }
+        if (!Number.isFinite(count)) {
+          return;
+        }
+        if (!cancelled) {
+          setStars(count);
+        }
 
         // persist to localStorage
         try {
-          localStorage.setItem(LS_KEY, JSON.stringify({ count, ts: Date.now() }));
+          localStorage.setItem(
+            LS_KEY,
+            JSON.stringify({ count, ts: Date.now() }),
+          );
         } catch {
           /* storage might be full or disabled; ignore */
         }
@@ -397,21 +409,30 @@ const NavBarAction = ({
     };
   }, []);
 
-
   return (
     <div className="bordered-div-padding flex items-center justify-between border lg:border-none lg:!p-0">
-      <a href={SITE_METADATA.github.repository_link} target="_blank" className="flex items-center">
+      <a
+        href={SITE_METADATA.github.repository_link}
+        target="_blank"
+        className="flex items-center"
+      >
         <Button
           variant="ghost"
           className="gap-2 font-medium lg:text-base"
           size="sm"
         >
           <FaGithub className="size-5" />
-          <span className="">{stars == null ? "—" : formatCompact(stars)} ★</span>
+          <span className="">
+            {stars == null ? '—' : formatCompact(stars)} ★
+          </span>
         </Button>
       </a>
 
-      <a href={SITE_METADATA.discord.invitation_link} target="_blank" className="flex items-center">
+      <a
+        href={SITE_METADATA.discord.invitation_link}
+        target="_blank"
+        className="flex items-center"
+      >
         <Button
           variant="ghost"
           className="gap-2 font-medium lg:text-base"

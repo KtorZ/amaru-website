@@ -1,7 +1,9 @@
-import { Button } from '@/components/ui/button';
 import { FaDiscord, FaGithub } from 'react-icons/fa6';
-import { PlusSigns } from '@/components/icons/plus-signs';
+
 import { SITE_METADATA } from '../../consts.ts';
+
+import { PlusSigns } from '@/components/icons/plus-signs';
+import { Button } from '@/components/ui/button';
 
 export function AboutHero() {
   return (
@@ -14,7 +16,10 @@ export function AboutHero() {
             <span className="block">for a fraction of the resources</span>
           </h1>
           <p className="text-muted-foreground mx-auto max-w-[700px] text-sm leading-relaxed md:text-lg lg:text-xl">
-            Amaru is an Open Source Cardano node client, entirely written in Rust. By making different design trade-offs, Amaru manages to provide full-node capabilities with a constrained set of resources without ever compromising on security and reliability.
+            Amaru is an Open Source Cardano node client, entirely written in
+            Rust. By making different design trade-offs, Amaru manages to
+            provide full-node capabilities with a constrained set of resources
+            without ever compromising on security and reliability.
           </p>
         </div>
 

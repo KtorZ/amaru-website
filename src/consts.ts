@@ -2,15 +2,16 @@
 // You can import this data from anywhere in your site by using the `import` keyword.
 
 export const SITE_TITLE = 'Amaru Docs';
-export const SITE_DESCRIPTION = 'An open source Cardano node client, written in Rust';
+export const SITE_DESCRIPTION =
+  'An open source Cardano node client, written in Rust';
 
-export const GITHUB_REPOS =
-  [ 'pragma-org/amaru'
-  , 'jeluard/amaru-doctor'
-  , 'pragma-org/uplc'
-  , 'pragma-org/amaru-treasury'
-  , 'SundaeSwap-finance/nawi'
-  ];
+export const GITHUB_REPOS = [
+  'pragma-org/amaru',
+  'jeluard/amaru-doctor',
+  'pragma-org/uplc',
+  'pragma-org/amaru-treasury',
+  'SundaeSwap-finance/nawi',
+];
 
 export const SITE_METADATA = {
   title: {
@@ -18,10 +19,7 @@ export const SITE_METADATA = {
     template: '%s | scalar',
   },
   description: SITE_DESCRIPTION,
-  keywords: [
-    'Cardano',
-    'Rust',
-  ],
+  keywords: ['Cardano', 'Rust'],
   authors: [{ name: 'Amaru Team' }],
   creator: 'Amaru Team',
   publisher: 'Amaru Team',
@@ -60,7 +58,7 @@ export const SITE_METADATA = {
     images: ['/og-image.jpg'],
     creator: '@amaru_cardano',
     handle: 'amaru_cardano',
-    profile_link:'https://x.com/amaru_cardano',
+    profile_link: 'https://x.com/amaru_cardano',
   },
   github: {
     org: 'pragma-org',

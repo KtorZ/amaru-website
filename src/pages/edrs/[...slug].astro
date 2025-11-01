@@ -7,9 +7,10 @@ import {
   Info,
   Terminal,
 } from 'lucide-react';
-import { SITE_METADATA } from '@/consts';
+
 import { Meteors } from '@/components/magicui/meteors';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { SITE_METADATA } from '@/consts';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 
 export async function getStaticPaths() {
@@ -44,7 +45,7 @@ const formattedDate = new Date(edr.data.date).toLocaleDateString('en-US', {
 <DefaultLayout title={edr.data.title} description={edr.data.description}>
   <div class="container overflow-hidden">
     <div class="">
-      <div class="border-x  border-[#30e2a3]">
+      <div class="border-x border-[#30e2a3]">
         <div class="bordered-div-padding mx-auto max-w-3xl">
           <a
             href="/edrs"
@@ -56,7 +57,7 @@ const formattedDate = new Date(edr.data.date).toLocaleDateString('en-US', {
             Back to EDRs
           </a>
           <div
-            class="text-muted-foreground flex items-center text-sm font-medium float-right"
+            class="text-muted-foreground float-right flex items-center text-sm font-medium"
           >
             <ClockFading className="mr-2 h-5 w-5" />
             {readingTime} min{readingTime !== 1 ? 's' : ''} read
@@ -66,7 +67,7 @@ const formattedDate = new Date(edr.data.date).toLocaleDateString('en-US', {
 
       <article>
         <!-- Post header -->
-        <div class="border-[#30d0b1] border-x border-b">
+        <div class="border-x border-b border-[#30d0b1]">
           <header
             class="bordered-div-padding mx-auto max-w-3xl space-y-6 !pt-0 md:space-y-8 lg:space-y-10"
           >
@@ -76,17 +77,19 @@ const formattedDate = new Date(edr.data.date).toLocaleDateString('en-US', {
               {edr.id}
             </h1>
             <div class="flex items-center justify-between">
-              <div class="text-secondary font-medium text-sm md:text-base float-left">
+              <div
+                class="text-secondary float-left text-sm font-medium md:text-base"
+              >
                 {edr.data.type}
               </div>
-              <div class="text-muted-foreground text-sm md:text-base left">
+              <div class="text-muted-foreground left text-sm md:text-base">
                 {edr.data.status}
               </div>
             </div>
           </header>
         </div>
 
-        <div  class="border-x border-[#30bcc2]">
+        <div class="border-x border-[#30bcc2]">
           <div class="bordered-div-padding mx-auto max-w-3xl">
             <!-- Post content with custom MDX styling -->
             <div

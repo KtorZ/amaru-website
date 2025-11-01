@@ -3,7 +3,7 @@ export interface EdrData {
   id: string;
   body?: string;
   collection: 'edrs';
-  description: string,
+  description: string;
   data: {
     type: string;
     status: string;

@@ -56,9 +56,9 @@ export function RoadmapSection({ roadmapItems }: Props) {
               <img
                 src="/images/landing/roadmap.webp"
                 alt="Hero Image"
-                width='100%'
-                height='auto'
-                className="mask-b-from-80% mask-b-to-95% mask-r-from-80% mask-r-to-95% mask-t-from-80% mark-t-to-95% mask-l-from-80% mask-l-to-95%"
+                width="100%"
+                height="auto"
+                className="mark-t-to-95% mask-t-from-80% mask-r-from-80% mask-r-to-95% mask-b-from-80% mask-b-to-95% mask-l-from-80% mask-l-to-95%"
               />
             </div>
           </div>
@@ -96,7 +96,7 @@ export function RoadmapSection({ roadmapItems }: Props) {
           </Tabs>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 border-x border-[#30bcc2]">
+        <div className="grid grid-cols-1 border-x border-[#30bcc2] md:grid-cols-2">
           {filteredItems.map((item, index) => {
             // Determine if this is in the last row
             const isLastRow =
@@ -130,7 +130,7 @@ export function RoadmapSection({ roadmapItems }: Props) {
           })}
         </div>
 
-        <div className="bordered-div-padding space-y-6 border-[#31a2d8] border-x border-t">
+        <div className="bordered-div-padding space-y-6 border-x border-t border-[#31a2d8]">
           <h3 className="font-weight-display leading-snug tracking-tighter md:text-xl">
             Community engagement
           </h3>

@@ -16,7 +16,7 @@ const teamMembers = [
     image: 'https://avatars.githubusercontent.com/u/5680256?v=4',
     github: 'KtorZ',
     twitter: '_KtorZ_',
-    bio: 'Lead Maintainer @ Cardano Foundation'
+    bio: 'Lead Maintainer @ Cardano Foundation',
   },
   {
     name: 'Arnaud Bailly',
@@ -25,7 +25,7 @@ const teamMembers = [
     image: 'https://avatars.githubusercontent.com/u/40221?v=4',
     github: 'abailly',
     twitter: 'dr_c0d3',
-    bio: 'Core Maintainer @ Cardano Foundation'
+    bio: 'Core Maintainer @ Cardano Foundation',
   },
   {
     name: 'Pi Lanningham',
@@ -34,7 +34,7 @@ const teamMembers = [
     image: 'https://avatars.githubusercontent.com/u/49870?v=4',
     github: 'Quantumplation',
     twitter: 'Quantumplation',
-    bio: 'Core Maintainer @ Sundae Labs'
+    bio: 'Core Maintainer @ Sundae Labs',
   },
   {
     name: 'Santiago Carmuega',
@@ -43,7 +43,7 @@ const teamMembers = [
     image: 'https://avatars.githubusercontent.com/u/653886?v=4',
     github: 'scarmuega',
     twitter: 'santicarmuega',
-    bio: 'Core Maintainer @ TxPipe'
+    bio: 'Core Maintainer @ TxPipe',
   },
   {
     name: 'Damien Czapla',
@@ -52,7 +52,7 @@ const teamMembers = [
     image: 'https://avatars.githubusercontent.com/u/161828179?v=4',
     github: 'Dam-CZ',
     twitter: '',
-    bio: 'Project Manager @ OpenTheLead'
+    bio: 'Project Manager @ OpenTheLead',
   },
   {
     name: 'Julien Eluard',
@@ -61,7 +61,7 @@ const teamMembers = [
     image: 'https://avatars.githubusercontent.com/u/359723?v=4',
     github: 'jeluard',
     twitter: '',
-    bio: 'Core Contributor @ Cardano Foundation'
+    bio: 'Core Contributor @ Cardano Foundation',
   },
   {
     name: 'Joshua Marchand',
@@ -70,7 +70,7 @@ const teamMembers = [
     image: 'https://avatars.githubusercontent.com/u/79121297?v=4',
     github: 'yHSJ',
     twitter: 'JSHyCS',
-    bio: 'Core Contributor @ Sundae Labs'
+    bio: 'Core Contributor @ Sundae Labs',
   },
   {
     name: 'Roland Kuhn',
@@ -79,7 +79,7 @@ const teamMembers = [
     image: 'https://avatars.githubusercontent.com/u/470469?v=4',
     github: 'rkuhn',
     twitter: '',
-    bio: 'Core Contributor @ Actyx AG'
+    bio: 'Core Contributor @ Actyx AG',
   },
   {
     name: 'Eric Torreborre',
@@ -88,7 +88,7 @@ const teamMembers = [
     image: 'https://avatars.githubusercontent.com/u/10988?v=4',
     github: 'etorreborre',
     twitter: 'etorreborre',
-    bio: 'Core Contributor @ Ockam'
+    bio: 'Core Contributor @ Ockam',
   },
   {
     name: 'Pascal Grange',
@@ -97,7 +97,7 @@ const teamMembers = [
     image: 'https://avatars.githubusercontent.com/u/378506?v=4',
     github: 'pgrange',
     twitter: '',
-    bio: 'Core Contributor @ Sundae Labs'
+    bio: 'Core Contributor @ Sundae Labs',
   },
   {
     name: 'Jonathan Slim',
@@ -106,7 +106,7 @@ const teamMembers = [
     image: 'https://avatars.githubusercontent.com/u/86131256?v=4',
     github: 'jonathanlim222',
     twitter: '',
-    bio: 'Core Contributor @ Sundae Labs'
+    bio: 'Core Contributor @ Sundae Labs',
   },
   {
     name: 'Geoff Little',
@@ -115,7 +115,7 @@ const teamMembers = [
     image: 'https://avatars.githubusercontent.com/u/3976777?v=4',
     github: 'geofflittle',
     twitter: '',
-    bio: 'Core Contributor'
+    bio: 'Core Contributor',
   },
 ].sort((a, b) => a.name.localeCompare(b.name));
 
@@ -134,9 +134,7 @@ function displayTeamMember(member) {
                 height={32}
                 className="rounded-full"
               />
-              <p className="text-sm font-medium md:text-base">
-                {member.name}
-              </p>
+              <p className="text-sm font-medium md:text-base">{member.name}</p>
             </div>
           </HoverCardTrigger>
           <HoverCardContent className="w-94" align="start">
@@ -188,7 +186,7 @@ function displayTeamMember(member) {
 export function AboutMissionTeam() {
   return (
     <section className="container">
-      <div className="grid grid-cols-1 divide-y border border-[#30bcc2] border-t-0 md:grid-cols-2 md:divide-x md:divide-y-0">
+      <div className="grid grid-cols-1 divide-y border border-t-0 border-[#30bcc2] md:grid-cols-2 md:divide-x md:divide-y-0">
         {/* Mission Section */}
         <div className="bordered-div-padding space-y-8 border-[#30bcc2]">
           <div className="space-y-4 md:space-y-6">
@@ -197,36 +195,100 @@ export function AboutMissionTeam() {
               Mission
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed md:text-base">
-              One of Cardano's key assets is its legendary robustness and stability, which is mainly attributed to the existing Haskell node, which has been working without significant disruption for about five years now (counting since the Byron reboot, circa February 2020). <span className="text-foreground">So why bother with another node?</span> The answer is, of course, plural:
+              One of Cardano's key assets is its legendary robustness and
+              stability, which is mainly attributed to the existing Haskell
+              node, which has been working without significant disruption for
+              about five years now (counting since the Byron reboot, circa
+              February 2020).{' '}
+              <span className="text-foreground">
+                So why bother with another node?
+              </span>{' '}
+              The answer is, of course, plural:
             </p>
             <ul>
               <li>
-                <details><summary>1. Better resource usage</summary>
-                <p className="text-muted-foreground">Software is ultimately a collection of design decisions and trade-offs. Some of those trade-offs in the Haskell node have led to rather high resource usages (e.g., resident memory), thus leading to the creation of specific protocol parameters (e.g., min-utxo-value) as countermeasures to ensure resource usage remains somewhat bounded. Our analysis is that different (albeit acceptable) trade-offs would yield better resource usage.</p>
+                <details>
+                  <summary>1. Better resource usage</summary>
+                  <p className="text-muted-foreground">
+                    Software is ultimately a collection of design decisions and
+                    trade-offs. Some of those trade-offs in the Haskell node
+                    have led to rather high resource usages (e.g., resident
+                    memory), thus leading to the creation of specific protocol
+                    parameters (e.g., min-utxo-value) as countermeasures to
+                    ensure resource usage remains somewhat bounded. Our analysis
+                    is that different (albeit acceptable) trade-offs would yield
+                    better resource usage.
+                  </p>
                 </details>
               </li>
               <li>
-                <details><summary>2. Industry-grade observability</summary>
-                <p className="text-muted-foreground">Observability is challenging, and it is even more so when rolling your own solution. With Amaru, we intend to embrace industry standards for monitoring, tracing, and logging to drastically enhance the user experience for operators seeking insights into their node's behaviour.</p>
+                <details>
+                  <summary>2. Industry-grade observability</summary>
+                  <p className="text-muted-foreground">
+                    Observability is challenging, and it is even more so when
+                    rolling your own solution. With Amaru, we intend to embrace
+                    industry standards for monitoring, tracing, and logging to
+                    drastically enhance the user experience for operators
+                    seeking insights into their node's behaviour.
+                  </p>
                 </details>
               </li>
               <li>
-                <details><summary>3. Enhanced interoperability</summary>
-                <p className="text-muted-foreground">Amaru being primarily written in Rust means that we can more easily leverage an existing and thriving ecosystem of blockchain solutions and aim at multiple target platforms (e.g. web-assembly, RISC-V). This opens up not only to a wide variety of potential contributors but also to many new use cases that are much harder (not to say unrealistic) to achieve with a Haskell node.</p>
+                <details>
+                  <summary>3. Enhanced interoperability</summary>
+                  <p className="text-muted-foreground">
+                    Amaru being primarily written in Rust means that we can more
+                    easily leverage an existing and thriving ecosystem of
+                    blockchain solutions and aim at multiple target platforms
+                    (e.g. web-assembly, RISC-V). This opens up not only to a
+                    wide variety of potential contributors but also to many new
+                    use cases that are much harder (not to say unrealistic) to
+                    achieve with a Haskell node.
+                  </p>
                 </details>
               </li>
               <li>
-                <details><summary>4. Higher-assurance & robustness</summary>
-                <p className="text-muted-foreground">Developing a new implementation of existing software means dissecting every part of the original implementation. Along the way, bugs and discrepancies with the specification are commonly found through conformance testing. Gaps in the documentation can also be identified and addressed. The development of [Amaru](https://github.com/pragma-org/amaru) has already proven this on several occasions. In the long run, more node implementations can be a synonym for reduced development time by allowing all implementations to converge faster towards better designs and more robust implementations.</p>
+                <details>
+                  <summary>4. Higher-assurance & robustness</summary>
+                  <p className="text-muted-foreground">
+                    Developing a new implementation of existing software means
+                    dissecting every part of the original implementation. Along
+                    the way, bugs and discrepancies with the specification are
+                    commonly found through conformance testing. Gaps in the
+                    documentation can also be identified and addressed. The
+                    development of [Amaru](https://github.com/pragma-org/amaru)
+                    has already proven this on several occasions. In the long
+                    run, more node implementations can be a synonym for reduced
+                    development time by allowing all implementations to converge
+                    faster towards better designs and more robust
+                    implementations.
+                  </p>
                 </details>
               </li>
               <li>
-                <details><summary>5. Decentralization</summary>
-                <p className="text-muted-foreground">In a world where Byzantine fault tolerance is at the centre and where decentralization is a paramount value, we believe that a single-node implementation presents a single point of failure and a central point of control. A new node not only increases the overall resilience of the network but also provides perspectives in terms of a roadmap and use cases.</p>
+                <details>
+                  <summary>5. Decentralization</summary>
+                  <p className="text-muted-foreground">
+                    In a world where Byzantine fault tolerance is at the centre
+                    and where decentralization is a paramount value, we believe
+                    that a single-node implementation presents a single point of
+                    failure and a central point of control. A new node not only
+                    increases the overall resilience of the network but also
+                    provides perspectives in terms of a roadmap and use cases.
+                  </p>
                 </details>
               </li>
             </ul>
-            <p className="text-muted-foreground"><span className="text-foreground">With Amaru, we believe that we can reconcile these goals while preserving Cardano's focus on security and robustness.</span> Like Haskell, Rust is a statically typed language that provides strong compile-time guarantees and fine-grained memory management. Its ecosystem is also well-equipped for high assurance, making it a sane choice for implementing blockchain solutions.</p>
+            <p className="text-muted-foreground">
+              <span className="text-foreground">
+                With Amaru, we believe that we can reconcile these goals while
+                preserving Cardano's focus on security and robustness.
+              </span>{' '}
+              Like Haskell, Rust is a statically typed language that provides
+              strong compile-time guarantees and fine-grained memory management.
+              Its ecosystem is also well-equipped for high assurance, making it
+              a sane choice for implementing blockchain solutions.
+            </p>
           </div>
         </div>
 

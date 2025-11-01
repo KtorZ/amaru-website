@@ -1,4 +1,9 @@
-import { ShieldCheck, MemoryStick, BookOpenCheck, Telescope } from 'lucide-react';
+import {
+  ShieldCheck,
+  MemoryStick,
+  BookOpenCheck,
+  Telescope,
+} from 'lucide-react';
 
 import { PlusSigns } from '@/components/icons/plus-signs';
 import { cn } from '@/lib/utils';
@@ -40,7 +45,7 @@ const features = [
     title: 'High-Assurance & Robustness',
     description: 'No compromise on security.',
     subDescription:
-      'Amaru\'s development includes a variety of testing techniques. From conformance tests with the Haskell node, to deterministic simulations and property-based testing. Alternative doesn\'t mean sloppy.',
+      "Amaru's development includes a variety of testing techniques. From conformance tests with the Haskell node, to deterministic simulations and property-based testing. Alternative doesn't mean sloppy.",
   },
   {
     icon: BookOpenCheck,
@@ -60,9 +65,9 @@ export function Features() {
             key={index}
             className={cn(
               'bordered-div-padding relative space-y-8',
-              index == 0 && 'border-b md:border-e border-[#30bcc2]',
-              index == 1 && 'border-b md:border-b-0 border-[#30bcc2]',
-              index == 3 && 'border-t md:border-s border-[#30bcc2]',
+              index == 0 && 'border-b border-[#30bcc2] md:border-e',
+              index == 1 && 'border-b border-[#30bcc2] md:border-b-0',
+              index == 3 && 'border-t border-[#30bcc2] md:border-s',
               feature.className,
             )}
           >

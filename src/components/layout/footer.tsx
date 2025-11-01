@@ -202,7 +202,7 @@ const Footer = () => {
         */}
 
         {/* Social and Status Section */}
-        <div className="flex flex-col justify-between border-x md:flex-row border-[#318fe8]">
+        <div className="flex flex-col justify-between border-x border-[#318fe8] md:flex-row">
           <div className="bordered-div-padding flex items-center space-x-3">
             <a
               href={SITE_METADATA.discord.invitation_link}
@@ -238,7 +238,7 @@ const Footer = () => {
         </div>
 
         {/* Legal Links Section */}
-        <div className="bordered-div-padding text-muted-foreground flex items-center justify-center space-x-6 border-x text-sm border-[#318fe8]">
+        <div className="bordered-div-padding text-muted-foreground flex items-center justify-center space-x-6 border-x border-[#318fe8] text-sm">
           <a
             href="/privacy-policy"
             className="hover:text-foreground transition-opacity hover:opacity-80"
