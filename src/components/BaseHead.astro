@@ -29,7 +29,7 @@ const imageURL = new URL(finalImage, Astro.url);
 <!-- Theme Script -->
 <script is:inline>
   const savedTheme = localStorage.getItem('starlight-theme');
-  const initialTheme = savedTheme || 'light';
+  const initialTheme = savedTheme || 'dark';
   document.documentElement.classList.toggle('dark', initialTheme === 'dark');
 </script>
 

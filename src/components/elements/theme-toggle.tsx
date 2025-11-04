@@ -12,7 +12,7 @@ interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ className }: ThemeToggleProps = {}) {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -21,7 +21,10 @@ export function ThemeToggle({ className }: ThemeToggleProps = {}) {
       | 'light'
       | 'dark'
       | null;
-    const initialTheme = savedTheme || 'light';
+    const initialTheme = savedTheme || 'dark';
+    if (!savedTheme) {
+      localStorage.setItem('starlight-theme', initialTheme);
+    }
     setTheme(initialTheme);
     document.documentElement.classList.toggle('dark', initialTheme === 'dark');
 

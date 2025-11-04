@@ -87,7 +87,7 @@ const Footer = () => {
 
     // Get initial theme from localStorage, default to 'light' if none exists
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    setTheme(savedTheme || 'light');
+    setTheme(savedTheme || 'dark');
 
     // Listen for theme changes
     const handleStorageChange = () => {
