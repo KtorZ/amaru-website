@@ -19,8 +19,8 @@ const features = [
       {
         src: '/images/landing/feature-1.webp',
         alt: 'Resource Usage',
-        width: 700,
-        height: 320,
+        width: 854,
+        height: 88,
       },
     ],
   },
@@ -35,8 +35,8 @@ const features = [
       {
         src: '/images/landing/feature-2.webp',
         alt: 'Open Telemetry',
-        width: 620,
-        height: 108,
+        width: 1495,
+        height: 791,
       },
     ],
   },
