@@ -1,0 +1,62 @@
+---
+title: Configuration
+description: Learn how to configure Scalar for your project needs
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+## `--ledger-dir` & `--chain-dir`
+
+Amaru's storage revolves around two key directories:
+
+- `--ledger-dir`: where the ledger's data is stored; the ledger data comprises the aggregated ledger state including UTxOs, registered credentials and their balance, registered pools, governance proposals, etc.
+
+- `--chain-dir`: where the chain information is stored; this comprises the past fetched blocks and their headers, epoch nonces, etc..
+
+Both can be configured independently, and it's usually a good idea to make those path location network-dependent (e.g. `ledger.mainnet.db`, `chain.preview.db`).
+
+## `--max-extra-ledger-snapshots`
+
+Amaru organises ledger's data per epoch. A snapshot is taken at the end of every epoch, as the data is needed for future epoch calculations. However, Amaru only needs to keep the past 3 snapshots to operate and it prunes older snapshots by default.
+
+You can alter this behaviour with `--max-extra-ledger-snapshots` to indicate a number of *extra* snapshot to keep around (in addition to the 3 mandatory ones). To keep everything, simply pass `all` as a value.
+
+## `--max-downstream-peers`
+
+Control the maximum number of client peers that are simultaneously allowed in the node-to-client protocols. This is mainly a protection mechanism for the server (i.e. Amaru).
+
+## Snapshots
+
+Amaru requires snapshots for bootstrapping. At this point in time, a snapshot comprises of:
+
+- 3 initial ledger states (each corresponding to a Haskell's `NewEpochState`)
+- some block headers around the starting point
+- Ouroboros rolling, candidate and epoch nonces
+
+You can find pre-packed configurations of those for each of the well-known networks:
+
+<Tabs>
+  <TabItem label="mainnet">
+    ### Mainnet
+
+    - [snapshots.json](https://github.com/pragma-org/amaru/tree/main/data/mainnet/snapshots.json)
+    - [headers.json](https://github.com/pragma-org/amaru/tree/main/data/mainnet/headers.json)
+    - [nonces.json](https://github.com/pragma-org/amaru/tree/main/data/mainnet/nonces.json)
+  </TabItem>
+  <TabItem label="preprod">
+    ### Preprod
+
+    - [snapshots.json](https://github.com/pragma-org/amaru/tree/main/data/preprod/snapshots.json)
+    - [headers.json](https://github.com/pragma-org/amaru/tree/main/data/preprod/headers.json)
+    - [nonces.json](https://github.com/pragma-org/amaru/tree/main/data/preprod/nonces.json)
+  </TabItem>
+  <TabItem label="preview">
+    ### Preview
+
+    - [snapshots.json](https://github.com/pragma-org/amaru/tree/main/data/preview/snapshots.json)
+    - [headers.json](https://github.com/pragma-org/amaru/tree/main/data/preview/headers.json)
+    - [nonces.json](https://github.com/pragma-org/amaru/tree/main/data/preview/nonces.json)
+  </TabItem>
+</Tabs>

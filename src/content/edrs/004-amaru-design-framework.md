@@ -7,9 +7,9 @@ status: accepted
 
 ## Context
 
-Amaru is meant to be(come) a rather large and complex project, spanning over multiple years.
+Amaru is meant to be(come) a rather large and complex project, spanning over multiple years. 
 
-The ambition of the project is to build a new fully interoperable block-producing node for improving the overall performance the Cardano blockchain.
+The ambition of the project is to build a new fully interoperable block-producing node for improving the overall performance the Cardano blockchain. 
 
 The Amaru node wants to provide a simplified entry point for building things on Cardano by using a modular design and Rust as its main coding language.
 
@@ -17,20 +17,18 @@ The Amaru node wants to provide a simplified entry point for building things on 
 
 Given the ambition of the project, we need a structured approach to turn ambitions into concrete goals.
 
-We want to have a unified structure to streamline development, ensure cross-team collaboration, and maintain focus on core objectives.
+We want to have a unified structure to streamline development, ensure cross-team collaboration, and maintain focus on core objectives. 
 
-This framework needs to enable efficient coordination across diverse teams and ensuring that all contributors align with the product’s high standards for performance, security, and resilience.
+This framework needs to enable efficient coordination across diverse teams and ensuring that all contributors align with the product’s high standards for performance, security, and resilience. 
 
 ## Decision
 
 Amaru will be using a customised framework adapted to the setup of the project :
 
 ![](https://github.com/user-attachments/assets/5bf1dd3b-5b2c-40ff-b6dd-c5ace85592c6)
-
 <p align="center"><code>Representation of the development framework that will be used throughout the life of Amaru</code></p>
 
 This representation encapsulates all the phases imagined for running the Amaru project :
-
 1. Problem framing : [DDD : Framing the problem](https://miro.com/app/board/uXjVNpa1sM0=/?fromEmbed=1) linking together Problem, People, Outcome and Constraints
 2. Solution architecture : [C4 Architecture](https://c4model.com/) representing the system and the interfaces between each key components
 3. Solution flows and structure : [DDD : Bounded context](https://miro.com/app/board/uXjVNpa36mI=/?fromEmbed=1) focusing on use cases and structuring the delivery blocks of the solution
@@ -51,9 +49,9 @@ This representation encapsulates all the phases imagined for running the Amaru p
 
 - We looked at various sources for encapsulating the _minimum structure necessary_ to structure the project
 
-> - [Domain Driven Design modelling process](https://github.com/ddd-crew/ddd-starter-modelling-process/blob/master/README.md)
-> - [Core mindset behind each step of Drive & Deliver](https://theleanstartup.com/principles)
-> - [Extreme programming is the guideline for the Drive & deliver steps of the framework](https://www.altexsoft.com/blog/extreme-programming-values-principles-and-practices/)
-> - [Outcome driven methodology used to create the framework for Amaru](https://www.mobiusloop.com/blog/pka8i66gimn35593mck8f4ipwidenb)
+> * [Domain Driven Design modelling process](https://github.com/ddd-crew/ddd-starter-modelling-process/blob/master/README.md)
+> * [Core mindset behind each step of Drive & Deliver](https://theleanstartup.com/principles)
+> * [Extreme programming is the guideline for the Drive & deliver steps of the framework](https://www.altexsoft.com/blog/extreme-programming-values-principles-and-practices/)
+> * [Outcome driven methodology used to create the framework for Amaru](https://www.mobiusloop.com/blog/pka8i66gimn35593mck8f4ipwidenb)  
 
 - We integrated feedbacks of experienced software developpers, project managers, product managers into our approach and kept just the necessary phases

@@ -72,7 +72,6 @@ function normalizeDescription(body) {
 
 function toRoadmapItem({ status, items, kind }) {
   return items.map((it) => {
-    console.log(it);
     const title = it.title || '(no title)';
     const description = normalizeDescription(it.body);
     let date;
@@ -86,6 +85,7 @@ function toRoadmapItem({ status, items, kind }) {
       title,
       description,
       date: formatDistance(new Date(date), new Date()),
+      timestamp: (new Date(date)).getTime(),
       team: {
         name: it.user?.login ?? 'Unknown',
         image: it.user?.avatar_url ?? '/favicon/favicon-96x96.png',
@@ -121,7 +121,7 @@ const perRepoPromises = GITHUB_REPOS.map(async (repo) => {
     kind: 'merged_pr',
   });
 
-  return [...planned, ...inProgress, ...shipped];
+  return [...planned, ...inProgress, ...shipped].sort((a, b) => b.timestamp - a.timestamp);
 });
 
 const roadmapItems = (await Promise.all(perRepoPromises))

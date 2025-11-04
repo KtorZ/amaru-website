@@ -2,7 +2,7 @@
 type: process
 status: accepted
 revision:
-  - '2025-08-14': remove unapplied rules
+- "2025-08-14": remove unapplied rules
 ---
 
 # Git Etiquette
@@ -23,7 +23,6 @@ Contributors will follow these git practices to keep the project maintainable.
 - apply changes via PRs
 - use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) for git messages
 - all commits must be [gpg-signed](https://git-scm.com/book/ms/v2/Git-Tools-Signing-Your-Work) and [signed-off](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---signoff), acting as a [Developer Certificate of Origin (DCO)](developercertificate.org):
-
   ```
   Developer Certificate of Origin
   Version 1.1

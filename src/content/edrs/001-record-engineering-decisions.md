@@ -53,11 +53,13 @@ status: proposed | accepted | rejected
 <!-- Summarizes, a posteriori, the major discussion points around that decisions -->
 ```
 
+
 ## Consequences
 
 - We'll start recording major engineering decisions on the project, like this one, before or after they happen. Conversations are often spread on different channels, especially Discord, in the present context, and we do not want decisions taken on peripheral channels to be lost in the void.
 
 - Hopefully, as time will tell, this particular decision will help make the project _more Open Source_ as it will provide context and a trail of decisions to potential contributors (might it be our future self).
+
 
 ## Discussion points
 

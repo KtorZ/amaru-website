@@ -1,0 +1,60 @@
+---
+title: Monitoring Stack (Jaeger)
+description: An example of Observability stack using Jaeger & Prometheus
+full: true
+---
+import { Aside, Badge, CardGrid, Code, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+```yaml title="docker-compose.yml"
+services:
+  jaeger:
+    image: jaegertracing/jaeger:2.4.0
+    volumes:
+      - "./jaeger-ui.json:/etc/jaeger/jaeger-ui.json"
+      - "./jaeger.yml:/etc/jaeger/config.yml"
+    command: ["--config", "/etc/jaeger/config.yml"]
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+
+  otlp-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    volumes:
+      - "./otlp-collector.yml:/etc/otlp-collector.yml"
+    command: ["--config", "/etc/otlp-collector.yml"]
+    ports:
+      - "4318:4318"
+
+  prometheus:
+    image: prom/prometheus:v3.0.1
+    command:
+      [
+        "--web.enable-otlp-receiver",
+        "--config.file=/etc/prometheus/prometheus.yml",
+      ]
+    volumes:
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+```
+# Jaeger + Prometheus
+
+Respective configuration files can be found here:
+
+- [jaeger-ui.json](https://github.com/pragma-org/amaru/tree/main/monitoring/jaeger/jaeger-ui.json)
+- [jaeger.yml](https://github.com/pragma-org/amaru/tree/main/monitoring/jaeger/jaeger.yml)
+- [otlp-collector.yml](https://github.com/pragma-org/amaru/tree/main/monitoring/jaeger/otlp-collector.yml)
+- [prometheus.yml](https://github.com/pragma-org/amaru/tree/main/monitoring/jaeger/prometheus.yml)
+
+Run with:
+
+```
+docker-compose up
+```
+
+Then, head to:
+
+- [http://localhost:16686](http://localhost:16686) (Jaeger)
+- [http://localhost:9090](http://localhost:9090) (Prometheus)
+
+See also [Jaeger's documentation](https://www.jaegertracing.io/).

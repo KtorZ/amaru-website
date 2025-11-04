@@ -133,7 +133,7 @@ const Footer = () => {
   return (
     <footer className={cn('overflow-hidden')}>
       {/* Pricing Section */}
-      <div className="container">
+      <div className="border-t border-[#318fe8]">
         {/*
         <div className="bordered-div-padding border-x">
           <h2 className="lg:text-4xxl font-weight-display mt-6 text-xl md:mt-14 md:text-3xl lg:mt-40">
@@ -202,7 +202,8 @@ const Footer = () => {
         */}
 
         {/* Social and Status Section */}
-        <div className="flex flex-col justify-between border-x border-[#318fe8] md:flex-row">
+        <div className="container">
+        <div className="flex flex-col justify-between md:flex-row">
           <div className="bordered-div-padding flex items-center space-x-3">
             <a
               href={SITE_METADATA.discord.invitation_link}
@@ -232,13 +233,13 @@ const Footer = () => {
               <FaXTwitter className="size-5" />
             </a>
           </div>
-          <div className="bordered-div-padding flex items-center border-t text-[#00A656] md:border-t-0">
+          <div className="bordered-div-padding flex items-center md:border-t-0">
             <img width="100" src="/layout/pragma-logo.png"></img>
           </div>
         </div>
 
         {/* Legal Links Section */}
-        <div className="bordered-div-padding text-muted-foreground flex items-center justify-center space-x-6 border-x border-[#318fe8] text-sm">
+        <div className="bordered-div-padding text-muted-foreground flex items-center justify-center space-x-6 text-sm">
           <a
             href="/privacy-policy"
             className="hover:text-foreground transition-opacity hover:opacity-80"
@@ -262,6 +263,7 @@ const Footer = () => {
           wordmarkClassName={logoWordmarkClass}
         />
         */}
+      </div>
       </div>
     </footer>
   );

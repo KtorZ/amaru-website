@@ -45,23 +45,13 @@ export function RoadmapSection({ roadmapItems }: Props) {
       : roadmapItems.filter((item) => item.status === activeStatus);
 
   return (
-    <section className="container">
-      <div>
-        <div className="bordered-div-padding border-x border-b border-[#30e2a3]">
-          <h1 className="font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl">
+    <section>
+      <div className="container">
+        <div className="border-x border-b border-[#30e2a3] bg-[url(/images/landing/roadmap.webp)] bg-center bg-cover bg-no-repeat pb-35">
+          <h1 className="bordered-div-padding font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl drop-shadow-lg">
             Roadmap
           </h1>
-          <div className="container">
-            <div className="flex items-center justify-center">
-              <img
-                src="/images/landing/roadmap.webp"
-                alt="Hero Image"
-                width="100%"
-                height="auto"
-                className="mark-t-to-95% mask-t-from-80% mask-r-from-80% mask-r-to-95% mask-b-from-80% mask-b-to-95% mask-l-from-80% mask-l-to-95%"
-              />
-            </div>
-          </div>
+
           <div className="mt-6 block md:hidden">
             <Select
               value={activeStatus}

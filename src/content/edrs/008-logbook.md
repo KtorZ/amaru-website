@@ -10,7 +10,6 @@ status: accepted
 We introduce the notion of a "Logbook" to complement the [Engineering Decision Records](./001-record-engineering-decisions.md) process by capturing developer musings, notes, tips, and informal documentation throughout the development process.
 
 ## Motivation
-
 [Engineering Decision Records](./001-record-engineering-decisions.md) are used within this repository to record official decisions that we reach as a team. However, they do not capture all context that might be useful to capture for a highly exploratory project like this one.
 For example, it would not be appropriate to record experiments, helpful tips, meeting notes, or other informal but highly valuable contextual information about development.
 We take inspiration from the [Ouroboros Leios](https://github.com/input-output-hk/ouroboros-leios/blob/main/Logbook.md) and [Ouroboros Peras](https://github.com/input-output-hk/peras-design/blob/main/Logbook.md) projects who instituted a "Logbook" to great effect.

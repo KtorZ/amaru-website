@@ -99,7 +99,7 @@ const navigationItems: NavItem[] = [
       },
     ],
   },
-  { title: 'Docs', href: '/docs' },
+  { title: 'Docs', href: '/docs/installation' },
   { title: 'EDRs', href: '/edrs' },
   { title: 'Roadmap', href: '/roadmap' },
   { title: 'FAQ', href: '/faq' },

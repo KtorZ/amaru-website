@@ -17,27 +17,27 @@ Defining precise errors and composing them without introducing too much overhead
 
 We will use the following approach:
 
-- use `Result<T, E>` for all functions that can fail;
+* use `Result<T, E>` for all functions that can fail;
 
-- avoid `panic!` and related, except in truly unrecoverable (e.g. bugs) or unreachable situations;
+* avoid `panic!` and related, except in truly unrecoverable (e.g. bugs) or unreachable situations;
 
-- use [thiserror](https://github.com/dtolnay/thiserror) to define structured, descriptive error enums per crate. More specifically:
-  - these errors will implement `std::error::Error`;
-  - avoid using `#[from]` to embed internal errors (i.e errors defined in the same crate) unless there's a good reason to. `#[from]` should be preferred for
-    embedding foreign errors;
-  - the `#[source]` annotation should be completely unnecessary because that is already provided by `anyhow::Context`;
+* use [thiserror](https://github.com/dtolnay/thiserror) to define structured, descriptive error enums per crate. More specifically:
+    * these errors will implement `std::error::Error`;
+    * avoid using `#[from]` to embed internal errors (i.e errors defined in the same crate) unless there's a good reason to. `#[from]` should be preferred for
+      embedding foreign errors;
+    * the `#[source]` annotation should be completely unnecessary because that is already provided by `anyhow::Context`;
 
-- Use `#[from] Box<dyn std::error::Error + Send + Sync>` if you need to embed arbitrary foreign errors of different kinds;
+* Use `#[from] Box<dyn std::error::Error + Send + Sync>` if you need to embed arbitrary foreign errors of different kinds;
 
-- when context needs to be added to an error (e.g. in application-level binaries), one shall use [anyhow](https://github.com/dtolnay/anyhow) for ergonomic error propagation and context;
-  - If required, use `.downcast_ref` to pull specific errors from an `anyhow::Result` for fine-grained handling.
+* when context needs to be added to an error (e.g. in application-level binaries), one shall use [anyhow](https://github.com/dtolnay/anyhow) for ergonomic error propagation and context;
+    * If required, use `.downcast_ref` to pull specific errors from an `anyhow::Result` for fine-grained handling.
 
-- `?` operator usage in application binaries may wrap errors with `context()` to improve debuggability;
+* `?` operator usage in application binaries may wrap errors with `context()` to improve debuggability;
 
 ## Consequences
 
-- developers will need to define and maintain error enums for each crate;
-- anyhow is used in `amaru` crate to avoid boilerplate while retaining detailed context;
+* developers will need to define and maintain error enums for each crate;
+* anyhow is used in `amaru` crate to avoid boilerplate while retaining detailed context;
 
 ## Example
 

@@ -1,0 +1,109 @@
+---
+title: Installation Instructions
+description: Installation instructions & quick start guide for Amaru
+full: true
+---
+
+import {
+  Aside,
+  Card,
+  CardGrid,
+  LinkButton,
+  Steps,
+  Tabs,
+  TabItem,
+} from '@astrojs/starlight/components';
+
+## Installation
+
+<Tabs>
+<TabItem label="downloads">
+The easiest to get started with Amaru is by downloading one of the pre-compiled executable.
+
+<LinkButton href="#" icon="linux" iconPlacement="start">
+  <div style="text-align: center">
+    <strong>linux x86_64</strong> <br/> nightly
+  </div>
+</LinkButton>
+
+<LinkButton href="#" icon="linux" iconPlacement="start">
+  <div style="text-align: center">
+    <strong>linux aarch64</strong> <br/> nightly
+  </div>
+</LinkButton>
+
+
+<LinkButton href="#" icon="apple" iconPlacement="start">
+  <div style="text-align: center">
+    <strong>macos aarch64</strong> <br/> nightly
+  </div>
+</LinkButton>
+</TabItem>
+<TabItem label="docker">
+Coming Soon...
+</TabItem>
+
+<TabItem label="from sources">
+If you rather install everything from sources, no worries: Amaru comes with a rich [`Makefile`](https://github.com/pragma-org/amaru/tree/main/Makefile) to assist with compilation.
+
+```console
+git clone --depth 1 https://github.com/pragma-org/amaru.git
+cd amaru
+make
+```
+
+You'll see an extensive help menu listing the available recipes. To simply build Amaru, run:
+
+```console
+make build
+```
+</TabItem>
+</Tabs>
+
+## Quick Start
+
+<Steps>
+
+1. ### Bootstrap the node
+
+   Amaru requires snapshots to start as it doesn't re-validate historical data.
+
+   ```console
+   amaru bootstrap --network=preprod
+   ```
+
+   This command downloads pre-packed snapshots for Amaru, and import them into Amaru's local storage.
+
+2. ### (Optional) Setup observability backends
+
+   Amaru doesn't have a graphical user interface out of the box, but it has
+   telemetry. So, in addition to logs printed out on the terminal, you can run
+   one an observability backend to collect and process the telemetry.
+
+   ```console
+   docker-compose -f monitoring/jaeger/docker-compose.yml up
+   export AMARU_WITH_OPEN_TELEMETRY=true
+   ```
+
+   This is only one example, you can also look into [Amaru-doctor](https://github.com/jeluard/amaru-doctor.git) as a lean alternative.
+
+3. ### Run Amaru
+
+   Then simply run the Amaru daemon. This assumes a local peer on
+   `127.0.0.1:3001` but you can put any valid peer address here. You can also
+   repeat the `--peer` option should you want to add multiple peers.
+
+   ```console
+   amaru daemon --network=preprod --peer-address 127.0.0.1:3001
+   ```
+
+   This will run Amaru from the snapshot onwards. You can interrupt it at any
+   time using a SIGINT (Ctrl+C). It'll resume back to where it was on restart.
+
+</Steps>
+
+<Aside type="note">
+These instructions assume one starts from scratch, and has access to another peer on the selected network (e.g. [`preprod`](https://book.world.dev.cardano.org/env-preprod.html)).
+
+To run a local cardano-node as a peer, refer to [Cardano's developers portal](https://developers.cardano.org/docs/get-started/cardano-node/running-cardano). Make sure your peer listens to port `3001` or adapt the `AMARU_PEER_ADDRESS` option or environment variable (e.g. `export AMARU_PEER_ADDRESS=127.0.0.1:3002`)
+</Aside>

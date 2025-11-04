@@ -66,8 +66,8 @@ export default function Edrs({ edrs }: { edrs: EdrData[] }) {
   return (
     <section className="container">
       <div>
-        <div className="bordered-div-padding border-x border-b border-[#30e2a3]">
-          <h1 className="font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl">
+        <div className="border-x border-b border-[#30e2a3] bg-[url(/images/landing/database_knowledge.webp)] bg-center bg-cover bg-no-repeat pb-35">
+          <h1 className="bordered-div-padding font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl drop-shadow-lg">
             Engineering Decision Records
           </h1>
           <div className="mt-6 block md:hidden">

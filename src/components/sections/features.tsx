@@ -18,7 +18,7 @@ const features = [
     images: [
       {
         src: '/images/landing/feature-1.webp',
-        alt: 'Schema Builder',
+        alt: 'Resource Usage',
         width: 700,
         height: 320,
       },
@@ -33,8 +33,8 @@ const features = [
     className: '!pb-0',
     images: [
       {
-        src: '/images/landing/feature-2-1.webp',
-        alt: 'Real Time Collaboration',
+        src: '/images/landing/feature-2.webp',
+        alt: 'Open Telemetry',
         width: 620,
         height: 108,
       },

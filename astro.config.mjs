@@ -9,11 +9,6 @@ import { defineConfig } from 'astro/config';
 import fs from 'node:fs';
 import path from 'node:path';
 
-function loadEDRs() {
-  const dir = path.join(__dirname, 'src', 'content', 'docs', 'engineering-decision-records');
-  console.log(dir);
-}
-
 // https://astro.build/config
 export default defineConfig({
   site: 'https://pragma-org.github.io/amaru',
@@ -31,15 +26,15 @@ export default defineConfig({
         {
           label: 'Getting Started',
           items: [
-            { label: 'Installation', slug: 'installation' },
-            { label: 'Configuration', slug: 'configuration' },
+            { label: 'Installation', slug: 'docs/installation' },
+            { label: 'Configuration', slug: 'docs/configuration' },
           ],
         },
         {
           label: 'Guides & Tutorials',
           items: [
-            { label: 'Monitoring', slug: 'monitoring' },
-            { label: 'Profiling', slug: 'profiling' },
+            { label: 'Monitoring', slug: 'docs/monitoring' },
+            { label: 'Profiling', slug: 'docs/profiling' },
           ],
         },
       ],
