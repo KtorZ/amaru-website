@@ -5,21 +5,61 @@ import Edrs from '@/components/sections/edrs';
 import { SITE_TITLE, SITE_DESCRIPTION } from '@/consts';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 
-const edrs = (await getCollection('edrs'))
+function stripMarkdown(markdown) {
+  return markdown
+    // Remove code fences and inline code
+    .replace(/`{3}[\s\S]*?`{3}/g, '')
+    .replace(/`([^`]*)`/g, '$1')
+    // Remove images & links: ![alt](url) → alt, [text](url) → text
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    // Remove headings, bold, italics, strikethrough
+    .replace(/^#+\s+/gm, '')
+    .replace(/(\*\*|__)(.*?)\1/g, '$2')
+    .replace(/(\*|_)(.*?)\1/g, '$2')
+    .replace(/~~(.*?)~~/g, '$1')
+    // Remove blockquotes and horizontal rules
+    .replace(/^\s*>+\s?/gm, '')
+    .replace(/^([-*_]\s*?){3,}$/gm, '')
+    // Remove list markers
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/^\s*\d+\.\s+/gm, '')
+    // Collapse multiple newlines
+    .replace(/\n{2,}/g, '\n')
+    // Trim spaces
+    .trim();
+}
+
+function summarize(text) {
+  // Split text into sentences
+  const sentences = text.match(/[^.!?\n]+[.!?\n]+/g) || [text];
+
+  console.log(sentences)
+
+  // Tokenize words and count frequencies
+  const freq = {};
+  const words = text.toLowerCase().match(/\b[a-z']+\b/g) || [];
+  for (const w of words) freq[w] = (freq[w] || 0) + 1;
+
+  // Score each sentence by summing word frequencies
+  const scored = sentences.map(s => ({
+    sentence: s.trim(),
+    score: (s.toLowerCase().match(/\b[a-z']+\b/g) || [])
+      .reduce((sum, w) => sum + (freq[w] || 0), 0)
+  }));
+
+  // Sort and take top sentences
+  const summary = scored.sort((a, b) => b.score - a.score)[0].sentence;
+
+  return `"${summary}"`;
+}
+
+const edrs = await Promise.all((await getCollection('edrs'))
   .sort((a, b) => b.id.localeCompare(b.id))
-  .map((edr) => {
-    const decisionIndex = edr.body.indexOf('## Decision');
-
-    edr.description =
-      edr.data.description ??
-      edr.body
-        .slice(decisionIndex)
-        .replace(/## Decision.*\n?/g, '')
-        .replace(/<[^>]+>/g, '')
-        .slice(0, 150) + '…';
-
+  .map(async (edr) => {
+    edr.description = edr.data.description ?? summarize(stripMarkdown(edr.body));
     return edr;
-  });
+  }));
 ---
 
 <DefaultLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>

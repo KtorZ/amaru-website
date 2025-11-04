@@ -5,6 +5,7 @@ import * as React from 'react';
 import {
   Binoculars,
   BriefcaseMedical,
+  ChevronDown,
   Coins,
   Cpu,
   Orbit,

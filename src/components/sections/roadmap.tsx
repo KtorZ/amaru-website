@@ -47,7 +47,7 @@ export function RoadmapSection({ roadmapItems }: Props) {
   return (
     <section>
       <div className="container">
-        <div className="border-x border-b border-[#30e2a3] bg-[url(/images/landing/roadmap.webp)] bg-center bg-cover bg-no-repeat pb-35">
+        <div className="border-x border-b border-[#30e2a3] bg-[url(/images/landing/roadmap.webp)] bg-center bg-cover bg-no-repeat pb-50">
           <h1 className="bordered-div-padding font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl drop-shadow-lg">
             Roadmap
           </h1>
@@ -156,7 +156,9 @@ function Item({ item, className }: { item: RoadmapItem; className?: string }) {
   };
 
   return (
-    <div
+    <a
+      href={item.url}
+      target="_blank"
       className={cn(
         'bordered-div-padding hover:bg-muted/30 group dark:hover:bg-muted border-b',
         className,
@@ -209,6 +211,6 @@ function Item({ item, className }: { item: RoadmapItem; className?: string }) {
           <FaGithub className="size-5" />
         </a>
       </div>
-    </div>
+    </a>
   );
 }

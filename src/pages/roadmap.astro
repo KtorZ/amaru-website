@@ -86,6 +86,7 @@ function toRoadmapItem({ status, items, kind }) {
       description,
       date: formatDistance(new Date(date), new Date()),
       timestamp: (new Date(date)).getTime(),
+      url: it.html_url,
       team: {
         name: it.user?.login ?? 'Unknown',
         image: it.user?.avatar_url ?? '/favicon/favicon-96x96.png',

@@ -104,6 +104,7 @@ const faqs: Record<Category, FAQ[]> = {
       answer:
         "While few parts are still in the making and we definitely don't recommend using Amaru as your sole block producer, we are *already* looking for pioneer willing to try out Amaru and help us iron out the edges.",
     },
+    {}
   ],
   'Cardano & Community': [
     {
@@ -141,6 +142,8 @@ const faqs: Record<Category, FAQ[]> = {
         </>
       ),
     },
+    {},
+    {},
   ],
   'Treasury & Funding': [
     {
@@ -168,6 +171,9 @@ const faqs: Record<Category, FAQ[]> = {
         </>
       ),
     },
+    {},
+    {},
+    {},
   ],
 };
 
@@ -218,8 +224,8 @@ export function FAQSection() {
 
         <div className="border-x border-[#30bcc2]">
           <Accordion type="single" collapsible>
-            {faqs[activeTab].map((faq, index) => (
-              <AccordionItem
+            {faqs[activeTab].map((faq, index) => faq.question
+              ? (<AccordionItem
                 key={index}
                 value={`item-${index}`}
                 className="border-b-[#30bcc2]"
@@ -234,10 +240,9 @@ export function FAQSection() {
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
-            ))}
+            ) : (<div className="hidden p-12 md:block" />))}
           </Accordion>
         </div>
-        <div className="hidden border-x border-[#31a2d8] p-10 md:block" />
       </div>
     </section>
   );
