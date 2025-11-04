@@ -11,9 +11,9 @@ This decision record documents the process behind managing the payments linked t
 
 ## Motivation
 
-We want to have a very straightforward approach to managing the treasury budget we receive and the acceptance of deliverables made on the project. 
+We want to have a very straightforward approach to managing the treasury budget we receive and the acceptance of deliverables made on the project.
 
-Thus, we would like to track and report activity monthly in a very simple manner to have a transparent and coherent treasury management process. 
+Thus, we would like to track and report activity monthly in a very simple manner to have a transparent and coherent treasury management process.
 
 We would also like to use lessons learned and best practices from other industries and take a minimalistic approach of finance management on a project.
 
@@ -36,13 +36,14 @@ We would also like to use lessons learned and best practices from other industri
 ### Treasury management
 
 A monthly statement of our treasury balance and transactions will be made available in our repo [amaru-treasury](https://github.com/pragma-org/amaru-treasury/tree/main) including:
+
 > Every transaction made in the month  
-> A recap for each scope of amount spent in the month 
+> A recap for each scope of amount spent in the month
 
 ## Consequence
 
 - Each contracted work done on the project will be available in the [amaru-treasury Journal](https://github.com/pragma-org/amaru-treasury/tree/main/journal) in a transparent manner so that everyone is aware of what's ongoing.
 
-- We will try to keep things as simple as they can be while keeping up a structured management environement. 
+- We will try to keep things as simple as they can be while keeping up a structured management environement.
 
 ## Discussion points

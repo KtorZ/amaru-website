@@ -80,7 +80,7 @@ import { Aside, Badge, CardGrid, Code, Steps, Tabs, TabItem } from '@astrojs/sta
 
 EOF
 cat amaru/docs/PROFILING.md >> tmp.mdx
-callouts_to_aside < tmp.mdx | enable_html_blocks > src/content/docs/profiling.mdx
+callouts_to_aside < tmp.mdx | enable_html_blocks > src/content/docs/docs/profiling.mdx
 
 # Monitoring/README.md
 cat 1>tmp.mdx <<EOF
@@ -93,10 +93,9 @@ import { Aside, Badge, CardGrid, Code, Steps, Tabs, TabItem } from '@astrojs/sta
 
 EOF
 cat amaru/monitoring/README.md >> tmp.mdx
-callouts_to_aside < tmp.mdx | enable_html_blocks > src/content/docs/monitoring.mdx
+callouts_to_aside < tmp.mdx | enable_html_blocks > src/content/docs/docs/monitoring.mdx
 
 # Monitoring/jaeger.yml
-mkdir -p src/content/docs/monitoring
 cat 1>tmp.mdx <<EOF
 ---
 title: Monitoring Stack (Jaeger)
@@ -116,10 +115,9 @@ EOF
 
 cat amaru/monitoring/jaeger/README.md >> tmp.mdx
 
-callouts_to_aside < tmp.mdx | enable_html_blocks > src/content/docs/monitoring/jaeger.mdx
+callouts_to_aside < tmp.mdx | enable_html_blocks > src/content/docs/docs/monitoring/jaeger.mdx
 
 # Monitoring/grafana
-mkdir -p src/content/docs/monitoring
 cat 1>tmp.mdx <<EOF
 ---
 title: Monitoring Stack (Grafana Tempo)
@@ -139,6 +137,6 @@ EOF
 
 cat amaru/monitoring/grafana-tempo/README.md >> tmp.mdx
 
-callouts_to_aside < tmp.mdx | enable_html_blocks > src/content/docs/monitoring/grafana-tempo.mdx
+callouts_to_aside < tmp.mdx | enable_html_blocks > src/content/docs/docs/monitoring/grafana-tempo.mdx
 
 npm run build

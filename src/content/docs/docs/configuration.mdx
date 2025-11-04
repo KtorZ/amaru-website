@@ -21,7 +21,7 @@ Both can be configured independently, and it's usually a good idea to make those
 
 Amaru organises ledger's data per epoch. A snapshot is taken at the end of every epoch, as the data is needed for future epoch calculations. However, Amaru only needs to keep the past 3 snapshots to operate and it prunes older snapshots by default.
 
-You can alter this behaviour with `--max-extra-ledger-snapshots` to indicate a number of *extra* snapshot to keep around (in addition to the 3 mandatory ones). To keep everything, simply pass `all` as a value.
+You can alter this behaviour with `--max-extra-ledger-snapshots` to indicate a number of _extra_ snapshot to keep around (in addition to the 3 mandatory ones). To keep everything, simply pass `all` as a value.
 
 ## `--max-downstream-peers`
 
@@ -44,6 +44,7 @@ You can find pre-packed configurations of those for each of the well-known netwo
     - [snapshots.json](https://github.com/pragma-org/amaru/tree/main/data/mainnet/snapshots.json)
     - [headers.json](https://github.com/pragma-org/amaru/tree/main/data/mainnet/headers.json)
     - [nonces.json](https://github.com/pragma-org/amaru/tree/main/data/mainnet/nonces.json)
+
   </TabItem>
   <TabItem label="preprod">
     ### Preprod
@@ -51,6 +52,7 @@ You can find pre-packed configurations of those for each of the well-known netwo
     - [snapshots.json](https://github.com/pragma-org/amaru/tree/main/data/preprod/snapshots.json)
     - [headers.json](https://github.com/pragma-org/amaru/tree/main/data/preprod/headers.json)
     - [nonces.json](https://github.com/pragma-org/amaru/tree/main/data/preprod/nonces.json)
+
   </TabItem>
   <TabItem label="preview">
     ### Preview
@@ -58,5 +60,6 @@ You can find pre-packed configurations of those for each of the well-known netwo
     - [snapshots.json](https://github.com/pragma-org/amaru/tree/main/data/preview/snapshots.json)
     - [headers.json](https://github.com/pragma-org/amaru/tree/main/data/preview/headers.json)
     - [nonces.json](https://github.com/pragma-org/amaru/tree/main/data/preview/nonces.json)
+
   </TabItem>
 </Tabs>

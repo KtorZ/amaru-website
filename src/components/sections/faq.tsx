@@ -104,7 +104,7 @@ const faqs: Record<Category, FAQ[]> = {
       answer:
         "While few parts are still in the making and we definitely don't recommend using Amaru as your sole block producer, we are *already* looking for pioneer willing to try out Amaru and help us iron out the edges.",
     },
-    {}
+    {},
   ],
   'Cardano & Community': [
     {
@@ -224,23 +224,27 @@ export function FAQSection() {
 
         <div className="border-x border-[#30bcc2]">
           <Accordion type="single" collapsible>
-            {faqs[activeTab].map((faq, index) => faq.question
-              ? (<AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="border-b-[#30bcc2]"
-              >
-                <AccordionTrigger className="bordered-div-padding font-weight-display flex w-full items-center justify-between !pb-4 text-base hover:no-underline md:!pb-6 md:text-xl [&>svg]:hidden [&[data-state=open]_svg]:rotate-180">
-                  <span>{faq.question}</span>
-                  <div className="bg-card flex size-8 items-center justify-center rounded-sm border">
-                    <ChevronDown className="size-5 shrink-0 tracking-tight transition-transform duration-200" />
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground bordered-div-padding max-w-2xl !pt-0 leading-relaxed tracking-tight">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ) : (<div className="hidden p-12 md:block" />))}
+            {faqs[activeTab].map((faq, index) =>
+              faq.question ? (
+                <AccordionItem
+                  key={index}
+                  value={`item-${index}`}
+                  className="border-b-[#30bcc2]"
+                >
+                  <AccordionTrigger className="bordered-div-padding font-weight-display flex w-full items-center justify-between !pb-4 text-base hover:no-underline md:!pb-6 md:text-xl [&>svg]:hidden [&[data-state=open]_svg]:rotate-180">
+                    <span>{faq.question}</span>
+                    <div className="bg-card flex size-8 items-center justify-center rounded-sm border">
+                      <ChevronDown className="size-5 shrink-0 tracking-tight transition-transform duration-200" />
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground bordered-div-padding max-w-2xl !pt-0 leading-relaxed tracking-tight">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ) : (
+                <div className="hidden p-12 md:block" />
+              ),
+            )}
           </Accordion>
         </div>
       </div>

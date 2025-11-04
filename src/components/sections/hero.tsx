@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-[url(/images/landing/hero.webp)] bg-no-repeat bg-cover bg-top bg-fixed">
+    <section className="relative overflow-hidden bg-[url(/images/landing/hero.webp)] bg-cover bg-fixed bg-top bg-no-repeat">
       <div className="container">
         <div className="bordered-div-padding relative flex flex-col items-center gap-8 border-x border-x-[#30e2a3] text-center md:gap-10 lg:gap-16 lg:!py-25">
           {/* Main Heading */}

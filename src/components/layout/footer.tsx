@@ -203,67 +203,67 @@ const Footer = () => {
 
         {/* Social and Status Section */}
         <div className="container">
-        <div className="flex flex-col justify-between md:flex-row">
-          <div className="bordered-div-padding flex items-center space-x-3">
+          <div className="flex flex-col justify-between md:flex-row">
+            <div className="bordered-div-padding flex items-center space-x-3">
+              <a
+                href={SITE_METADATA.discord.invitation_link}
+                className="px-3 py-2.5 transition-opacity hover:opacity-80"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Discord"
+              >
+                <FaDiscord className="size-5" />
+              </a>
+              <a
+                href={SITE_METADATA.github.repository_link}
+                className="px-3 py-2.5 transition-opacity hover:opacity-80"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+              >
+                <FaGithub className="size-5" />
+              </a>
+              <a
+                href={SITE_METADATA.twitter.profile_link}
+                className="px-3 py-2.5 transition-opacity hover:opacity-80"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Twitter"
+              >
+                <FaXTwitter className="size-5" />
+              </a>
+            </div>
+            <div className="bordered-div-padding flex items-center md:border-t-0">
+              <img width="100" src="/layout/pragma-logo.png"></img>
+            </div>
+          </div>
+
+          {/* Legal Links Section */}
+          <div className="bordered-div-padding text-muted-foreground flex items-center justify-center space-x-6 text-sm">
             <a
-              href={SITE_METADATA.discord.invitation_link}
-              className="px-3 py-2.5 transition-opacity hover:opacity-80"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Discord"
+              href="/privacy-policy"
+              className="hover:text-foreground transition-opacity hover:opacity-80"
             >
-              <FaDiscord className="size-5" />
+              Privacy Policy
             </a>
+            <span className="text-border">•</span>
             <a
-              href={SITE_METADATA.github.repository_link}
-              className="px-3 py-2.5 transition-opacity hover:opacity-80"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
+              href="/terms-of-service"
+              className="hover:text-foreground transition-opacity hover:opacity-80"
             >
-              <FaGithub className="size-5" />
-            </a>
-            <a
-              href={SITE_METADATA.twitter.profile_link}
-              className="px-3 py-2.5 transition-opacity hover:opacity-80"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Twitter"
-            >
-              <FaXTwitter className="size-5" />
+              Terms of Service
             </a>
           </div>
-          <div className="bordered-div-padding flex items-center md:border-t-0">
-            <img width="100" src="/layout/pragma-logo.png"></img>
-          </div>
-        </div>
 
-        {/* Legal Links Section */}
-        <div className="bordered-div-padding text-muted-foreground flex items-center justify-center space-x-6 text-sm">
-          <a
-            href="/privacy-policy"
-            className="hover:text-foreground transition-opacity hover:opacity-80"
-          >
-            Privacy Policy
-          </a>
-          <span className="text-border">•</span>
-          <a
-            href="/terms-of-service"
-            className="hover:text-foreground transition-opacity hover:opacity-80"
-          >
-            Terms of Service
-          </a>
-        </div>
-
-        {/* Large Logo */}
-        {/*
+          {/* Large Logo */}
+          {/*
         <Logo
           className="justify-center border-x"
           iconClassName="hidden"
           wordmarkClassName={logoWordmarkClass}
         />
         */}
-      </div>
+        </div>
       </div>
     </footer>
   );

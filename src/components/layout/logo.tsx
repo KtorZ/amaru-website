@@ -14,7 +14,11 @@ export default function Logo({
   href = '/',
 }: LogoProps) {
   return (
-    <a href={href} style={{position: "relative", top: "-5px", left: "10px"}} className={cn('flex items-center', className)}>
+    <a
+      href={href}
+      style={{ position: 'relative', top: '-5px', left: '10px' }}
+      className={cn('flex items-center', className)}
+    >
       <img
         src="/layout/logo-icon.svg"
         alt="Scalar Logo"
@@ -27,7 +31,7 @@ export default function Logo({
         alt="Scalar"
         width={133}
         height={40}
-        style={{marginLeft: "-8px"}}
+        style={{ marginLeft: '-8px' }}
         className={cn('object-contain', wordmarkClassName)}
       />
     </a>

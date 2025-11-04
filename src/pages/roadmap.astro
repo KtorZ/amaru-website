@@ -85,7 +85,7 @@ function toRoadmapItem({ status, items, kind }) {
       title,
       description,
       date: formatDistance(new Date(date), new Date()),
-      timestamp: (new Date(date)).getTime(),
+      timestamp: new Date(date).getTime(),
       url: it.html_url,
       team: {
         name: it.user?.login ?? 'Unknown',
@@ -122,7 +122,9 @@ const perRepoPromises = GITHUB_REPOS.map(async (repo) => {
     kind: 'merged_pr',
   });
 
-  return [...planned, ...inProgress, ...shipped].sort((a, b) => b.timestamp - a.timestamp);
+  return [...planned, ...inProgress, ...shipped].sort(
+    (a, b) => b.timestamp - a.timestamp,
+  );
 });
 
 const roadmapItems = (await Promise.all(perRepoPromises))

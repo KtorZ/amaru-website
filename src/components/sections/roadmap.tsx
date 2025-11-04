@@ -47,8 +47,8 @@ export function RoadmapSection({ roadmapItems }: Props) {
   return (
     <section>
       <div className="container">
-        <div className="border-x border-b border-[#30e2a3] bg-[url(/images/landing/roadmap.webp)] bg-center bg-cover bg-no-repeat pb-50">
-          <h1 className="bordered-div-padding font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl drop-shadow-lg">
+        <div className="border-x border-b border-[#30e2a3] bg-[url(/images/landing/roadmap.webp)] bg-cover bg-center bg-no-repeat pb-50">
+          <h1 className="bordered-div-padding font-weight-display text-2xl leading-snug tracking-tighter drop-shadow-lg md:text-3xl lg:text-5xl">
             Roadmap
           </h1>
 

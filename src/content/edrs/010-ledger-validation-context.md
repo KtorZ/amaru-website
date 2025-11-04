@@ -297,12 +297,13 @@ We have validations that need to access additional context beyond just what's in
 ### Idea to Merge "Rules" and "State"
 
 Our goal was to unify the code so that after each validation, we could directly derive and apply the state changes ("diff"). We identified that it would be possible by having the rules operating over a set of traits (interfaces) that both provide the necessary lookup (to fetch items like UTxOs, pool parameters, or account info) and handle updates (to consume an input, produce an output, retire a pool, etc.).
-  - These traits can be backed by our existing volatile state so that when validation finishes, our updated state is already computed.
-  - By using traits, we also allow other consumers (e.g., Dolos) to ignore or discard updates if they only need validation.
+
+- These traits can be backed by our existing volatile state so that when validation finishes, our updated state is already computed.
+- By using traits, we also allow other consumers (e.g., Dolos) to ignore or discard updates if they only need validation.
 
 ### Context Prefetch & Incremental State Updates
 
-We discussed how some validations within a *single* transaction can depend on newly mutated state (e.g., a transaction might first register a credential, then immediately use that credential in a delegation certificate).
+We discussed how some validations within a _single_ transaction can depend on newly mutated state (e.g., a transaction might first register a credential, then immediately use that credential in a delegation certificate).
 
 We acknowledged that we need to carefully handle ordering to ensure that each certificate or input is seen in the correct context.
 
@@ -315,7 +316,7 @@ We recognized that we don't want to traverse the same fields or sub-fields multi
 ### Implementation Details and Potential Enhancements
 
 We've started sketching traits like `UtxoSlice`, `PoolsSlice`, `AccountsSlice`, etc., which define both lookup and mutation methods (e.g., `consume`, `produce`, `register`, `retire`).
-  We considered a more sophisticated structure for prefetching data (to keep the logic near where the validation happens). Still, we concluded that we could achieve acceptable performance by building the slices once for each block.
-  We debated how best to organize files and rules, such as whether to organize by transaction fields or by topic (UTxO, staking, governance, etc.). We're leaning toward grouping logic by field to reduce repeated traversals.
+We considered a more sophisticated structure for prefetching data (to keep the logic near where the validation happens). Still, we concluded that we could achieve acceptable performance by building the slices once for each block.
+We debated how best to organize files and rules, such as whether to organize by transaction fields or by topic (UTxO, staking, governance, etc.). We're leaning toward grouping logic by field to reduce repeated traversals.
 
 Ultimately, we decided to move forward with trait-based state interfaces that will replace the current duplication between rules and state, allowing us to integrate validation and state updates in a single pass. We can keep them separate enough to remain flexible and pluggable but close enough to avoid double work when processing each block.

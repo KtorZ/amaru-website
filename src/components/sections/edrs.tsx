@@ -33,11 +33,11 @@ export default function Edrs({ edrs }: { edrs: EdrData[] }) {
   const [isLoading, setIsLoading] = useState(false);
 
   // Filter EDR by type
-  const filteredPosts =
-    (activeCategory === 'All'
+  const filteredPosts = (
+    activeCategory === 'All'
       ? edrs
       : edrs.filter((edr) => edr.data.type == types[activeCategory])
-    ).sort((a, b) => a.id.localeCompare(b.id));
+  ).sort((a, b) => a.id.localeCompare(b.id));
 
   // Get currently visible posts
   const visiblePostsList = filteredPosts.slice(0, visiblePosts);
@@ -67,8 +67,8 @@ export default function Edrs({ edrs }: { edrs: EdrData[] }) {
   return (
     <section className="container">
       <div>
-        <div className="border-x border-b border-[#30e2a3] bg-[url(/images/landing/database_knowledge.webp)] bg-center bg-cover bg-no-repeat pb-50">
-          <h1 className="bordered-div-padding font-weight-display text-2xl leading-snug tracking-tighter md:text-3xl lg:text-5xl drop-shadow-lg">
+        <div className="border-x border-b border-[#30e2a3] bg-[url(/images/landing/database_knowledge.webp)] bg-cover bg-center bg-no-repeat pb-50">
+          <h1 className="bordered-div-padding font-weight-display text-2xl leading-snug tracking-tighter drop-shadow-lg md:text-3xl lg:text-5xl">
             Engineering Decision Records
           </h1>
           <div className="mt-6 block md:hidden">

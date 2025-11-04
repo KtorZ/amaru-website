@@ -34,7 +34,7 @@ We also follow the lead of the Haskell implementation in assuming that NTP is co
 
 Concretely:
 
-- Slot-to-time mapping: utcTime(slot) = genesisUtc + slot * 1s. All values are in UTC.
+- Slot-to-time mapping: utcTime(slot) = genesisUtc + slot \* 1s. All values are in UTC.
 - The genesis offset is configured as Unix time (seconds since the Unix epoch) in configuration, and MUST be unambiguous (UTC).
 - Timers and scheduling SHOULD use a monotonic clock to mitigate NTP steps; wall-clock is consulted only for conversion and validation.
 
@@ -44,7 +44,6 @@ Concretely:
    Failure to do so may lead to losing network connectivity or inability to mint blocks even when winning the slot lottery.
 
    Operational guidance:
-
    - Recommended NTP client: chrony (preferred) or ntpd, configured with multiple, diverse, authenticated sources where possible.
    - Document acceptable maximum clock skew (e.g., ±500ms or as decided) and expose metrics/health checks to alert when exceeded.
    - State the expected leap-second behaviour (step vs smear) and how the node handles it (e.g., smear-compatible).
