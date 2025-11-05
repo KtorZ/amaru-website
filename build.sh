@@ -139,4 +139,14 @@ cat amaru/monitoring/grafana-tempo/README.md >> tmp.mdx
 
 callouts_to_aside < tmp.mdx | enable_html_blocks > src/content/docs/docs/monitoring/grafana-tempo.mdx
 
+# Fetch details about Amaru's treasury
+git clone --depth 1 https://github.com/pragma-org/amaru-treasury.git
+
+./parse-journal.mjs amaru-treasury/journal/consensus.md > src/data/consensus.json
+./parse-journal.mjs amaru-treasury/journal/ledger.md > src/data/ledger.json
+./parse-journal.mjs amaru-treasury/journal/marketing.md > src/data/marketing.json
+./parse-journal.mjs amaru-treasury/journal/mercenaries.md > src/data/mercenaries.json
+./parse-journal.mjs amaru-treasury/journal/contingency.md > src/data/contingency.json
+
+# Finally, build the website
 npm run build

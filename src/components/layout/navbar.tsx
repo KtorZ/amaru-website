@@ -103,6 +103,7 @@ const navigationItems: NavItem[] = [
   { title: 'Docs', href: '/docs/installation' },
   { title: 'EDRs', href: '/edrs' },
   { title: 'Roadmap', href: '/roadmap' },
+  { title: 'Treasury', href: '/treasury' },
   { title: 'FAQ', href: '/faq' },
   { title: 'About', href: '/about' },
 ];

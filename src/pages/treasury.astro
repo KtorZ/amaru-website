@@ -1,0 +1,25 @@
+---
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { Treasury } from '@/components/sections/treasury';
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import { render } from 'astro:content';
+
+import ledger from '@/data/ledger.json';
+import consensus from '@/data/consensus.json';
+import marketing from '@/data/marketing.json';
+import mercenaries from '@/data/mercenaries.json';
+import contingency from '@/data/contingency.json';
+
+const treasury = {
+  Consensus: consensus,
+  Ledger: ledger,
+  Marketing: marketing,
+  Mercenaries: mercenaries,
+  Contingency: contingency,
+}
+---
+
+
+<DefaultLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <Treasury client:visible treasury={treasury} />
+</DefaultLayout>
