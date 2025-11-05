@@ -1,0 +1,168 @@
+{
+  "metadata": {
+    "maintainer": "Arnaud Bailly",
+    "ownerCredential": "790273b642e528f620648bf494a3db052bad270ce7ee873324d0cf3b",
+    "treasuryScriptHash": "9beae6fc7feada6ccf824554b5e3a498eab15205ac9248c3fb993b5f",
+    "treasuryStakeAddress": "stake17xd74ehu0l4d5mx0sfz4fd0r5jvw4v2jqkkfyjxrlwvnkhccrqj9l",
+    "treasuryAddress": "addr1xxd74ehu0l4d5mx0sfz4fd0r5jvw4v2jqkkfyjxrlwvnkhumatn0cll2mfkvlqj92j678fyca2c4ypdvjfyv87ue8d0sn774ak",
+    "initialAllocation": [
+      {
+        "value": "300,000",
+        "unit": "ADA"
+      }
+    ],
+    "currentBalance": [
+      {
+        "value": "99,950",
+        "unit": "ADA"
+      },
+      {
+        "value": "109,258",
+        "unit": "USDM"
+      },
+      {
+        "value": "1",
+        "unit": "consensus@amaru"
+      }
+    ]
+  },
+  "transactions": [
+    {
+      "id": "088c80ad8620e480de51e49c2e6c6a0d504d47e30f2255e545a2d532494cec83",
+      "type": "disburse",
+      "agreement": {
+        "title": "AMC-Pankzsoft Agreement 2025-09-14",
+        "href": "https://ipfs.io/ipfs/bafybeia7jrqjmllqozpzfmx3k3div5rsh4mgr6vscl77eujopxo7qgh6na"
+      },
+      "balance": [
+        {
+          "value": "-16,000.00",
+          "unit": "USDM"
+        }
+      ],
+      "description": "Disbursement of $16,000.00 in payment of invoice for completion of [Milestone 2](#milestone-2)"
+    },
+    {
+      "id": "79dd616f50dae7cc94ca633912bc96e8ea6de7d205d3e232ec494368c9bd453f",
+      "type": "disburse",
+      "agreement": {
+        "title": "AMC-Pankzsoft Agreement 2025-09-14",
+        "href": "https://ipfs.io/ipfs/bafybeia7jrqjmllqozpzfmx3k3div5rsh4mgr6vscl77eujopxo7qgh6na"
+      },
+      "balance": [
+        {
+          "value": "-15,590.00",
+          "unit": "USDM"
+        }
+      ],
+      "description": "Disbursement of $15,590.00 in payment of invoice for completion of [Milestone 1](#milestone-1)"
+    },
+    {
+      "id": "54861a6532a3f270fb754dcd0a45b73034289d98755fd25627e650df9572bd97",
+      "type": "disburse",
+      "agreement": {
+        "title": "AMC-Pankzsoft Agreement 2025-09-14",
+        "href": "https://ipfs.io/ipfs/bafybeia7jrqjmllqozpzfmx3k3div5rsh4mgr6vscl77eujopxo7qgh6na"
+      },
+      "balance": [
+        {
+          "value": "-10.00",
+          "unit": "USDM"
+        }
+      ],
+      "description": "Canary transaction to test disbursement in USDM process."
+    },
+    {
+      "id": null,
+      "type": null,
+      "agreement": null,
+      "balance": [
+        {
+          "value": "47.507211",
+          "unit": "ADA"
+        },
+        {
+          "value": "141,258.93",
+          "unit": "USDM"
+        }
+      ],
+      "description": "Execution of the previous 20 swaps, across multiple transactions at an average rate of 0.7062 USDM per ADA."
+    },
+    {
+      "id": "d5c047bbdd387f7d0b8a69d04e37c6a567c44c5ae18524bc1de55eacd69c8068",
+      "type": "disburse",
+      "agreement": null,
+      "balance": [
+        {
+          "value": "-200,000",
+          "unit": "ADA"
+        }
+      ],
+      "description": "Disbursing funds into 20 separate swaps, each of 10k ADA for at least 7k USDM."
+    },
+    {
+      "id": "90f2895219e1b39811ad23aa04beacc74a559cad488cf5b55ec559214422686b",
+      "type": null,
+      "agreement": null,
+      "balance": [
+        {
+          "value": "-1.28",
+          "unit": "ADA"
+        },
+        {
+          "value": "73.51",
+          "unit": "USDM"
+        }
+      ],
+      "description": "Canary Swap order execution"
+    },
+    {
+      "id": "56b5f6c81668968bff810424df5d39daac1a736d1bede531778f408ac076fe7c",
+      "type": "disburse",
+      "agreement": null,
+      "balance": [
+        {
+          "value": "-100",
+          "unit": "ADA"
+        }
+      ],
+      "description": "Canary transaction disbursing into 1 swap for at least 70USDM."
+    },
+    {
+      "id": "acf08b7611ce385b9c776ad783b9d31666fa8f04a9f631d161537d52da6c7b62",
+      "type": "initialize",
+      "agreement": null,
+      "balance": [
+        {
+          "value": "300,000",
+          "unit": "ADA"
+        }
+      ],
+      "description": "Withdrawal from the reward account of 300,000 ADA received by the treasury withdrawal governance action, and locked at the treasury smart contract."
+    },
+    {
+      "id": "7068b2a950a02d43296679a2ca7f3f028504afc5a88f63e002ee09b733c533d9",
+      "type": "initialize",
+      "agreement": null,
+      "balance": [
+        {
+          "value": "0",
+          "unit": null
+        }
+      ],
+      "description": "Registering the treasury script as a stake credential, required to enable withdrawals from the treasury into it. The same transaction also publishes the treasury script in a UTxO which will be used later as a reference input to reduces the cost of future transactions."
+    },
+    {
+      "id": "e5be93f2530c51e0b1582e5a0e99ccb1235e4395a41c7196d06c4daea3eafe66",
+      "type": "publish",
+      "agreement": null,
+      "balance": [
+        {
+          "value": "0",
+          "unit": null
+        }
+      ],
+      "description": "Publishing the initial registry datum identifying the treasury script. This is needed to avoid circular dependencies between on-chain validators. In particular, we define the original set of permissions for the consensus scope as follows:\n\n- **reorganize**: 1 signature from:\n  - `790273b642e528f620648bf494a3db052bad270ce7ee873324d0cf3b` (consensus)\n- **disburse**: 3 signatures out of:\n  - `7095faf3d48d582fbae8b3f2e726670d7a35e2400c783d992bbdeffb` (ledger)\n  - `790273b642e528f620648bf494a3db052bad270ce7ee873324d0cf3b` (consensus)\n  - `97e0f6d6c86dbebf15cc8fdf0981f939b2f2b70928a46511edd49df2` (mercenaries)\n  - `f3ab64b0f97dcf0f91232754603283df5d75a1201337432c04d23e2e` (marketing)\n- **sweep**: 3 signatures out of:\n  - `7095faf3d48d582fbae8b3f2e726670d7a35e2400c783d992bbdeffb` (ledger)\n  - `790273b642e528f620648bf494a3db052bad270ce7ee873324d0cf3b` (consensus)\n  - `97e0f6d6c86dbebf15cc8fdf0981f939b2f2b70928a46511edd49df2` (mercenaries)\n  - `f3ab64b0f97dcf0f91232754603283df5d75a1201337432c04d23e2e` (marketing)\n- **fund**: disabled."
+    }
+  ]
+}

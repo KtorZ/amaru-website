@@ -1,0 +1,95 @@
+{
+  "metadata": {
+    "maintainer": "Pi Lanningham",
+    "ownerCredential": "97e0f6d6c86dbebf15cc8fdf0981f939b2f2b70928a46511edd49df2",
+    "treasuryScriptHash": "877f57e0bdcc8167e984dee052d8dd7346effc08ff80a29b045e1a10",
+    "treasuryStakeAddress": "stake17xrh74lqhhxgzelfsn0wq5kcm4e5dmluprlcpg5mq30p5yqhgk7k8",
+    "treasuryAddress": "addr1xxrh74lqhhxgzelfsn0wq5kcm4e5dmluprlcpg5mq30p5yy80at7p0wvs9n7npx7upfd3htngmhlcz8lsz3fkpz7rggqpymr9r",
+    "initialAllocation": [
+      {
+        "value": "500,000",
+        "unit": "ADA"
+      }
+    ],
+    "currentBalance": [
+      {
+        "value": "400,047",
+        "unit": "ADA"
+      },
+      {
+        "value": "63,760",
+        "unit": "USDM"
+      },
+      {
+        "value": "1",
+        "unit": "mercenaries@amaru"
+      }
+    ]
+  },
+  "transactions": [
+    {
+      "id": null,
+      "type": null,
+      "agreement": null,
+      "balance": [
+        {
+          "value": "46.324018",
+          "unit": "ADA"
+        },
+        {
+          "value": "80,240.643956",
+          "unit": "USDM"
+        }
+      ],
+      "description": "Execution of the previous 20 swaps, across multiple transactions at an average rate of 0.8024 USDM per ADA."
+    },
+    {
+      "id": "3cf9f4f352cf918f1ae7255a8fbb3b61c7d68236e4f56d810d9dad7f11f211f4",
+      "type": "disburse",
+      "agreement": null,
+      "balance": [
+        {
+          "value": "-100,000",
+          "unit": "ADA"
+        }
+      ],
+      "description": "Disbursing funds into 20 separate swaps, each of 5k ADA for at least 4k USDM. This split minimizes slippage, while securing 32% of the budget in a stable fiat backed stablecoin."
+    },
+    {
+      "id": "dc67e79626a265ce808f1a7ca5fcfa5bdb0d7fb635691fc5bd82917930d8f266",
+      "type": "initialize",
+      "agreement": null,
+      "balance": [
+        {
+          "value": "500,000",
+          "unit": "ADA"
+        }
+      ],
+      "description": "Withdrawal from the reward account of 500,000 ADA received by the treasury withdrawal governance action, and locked at the treasury smart contract."
+    },
+    {
+      "id": "b6aaa5bdfec89b0c52c338842971b12f525625dcfc7e899b4c8ebb15f8a45857",
+      "type": "initialize",
+      "agreement": null,
+      "balance": [
+        {
+          "value": "0",
+          "unit": null
+        }
+      ],
+      "description": "Registering the treasury script as a stake credential, required to enable withdrawals from the treasury into it. The same transaction also publishes the treasury script in a UTxO which will be used later as a reference input to reduces the cost of future transactions."
+    },
+    {
+      "id": "0729a234e4e12b945f06189ca479681e49ffcc116fb3713720bada72180fe27c",
+      "type": "publish",
+      "agreement": null,
+      "balance": [
+        {
+          "value": "0",
+          "unit": null
+        }
+      ],
+      "description": "Publishing the initial registry datum identifying the treasury script. This is needed to avoid circular dependencies between on-chain validators. In particular, we define the original set of permissions for the mercenaries scope as follows:\n\n- **reorganize**: 1 signature from:\n  - `97e0f6d6c86dbebf15cc8fdf0981f939b2f2b70928a46511edd49df2` (mercenaries)\n- **disburse**: 3 signatures out of:\n  - `7095faf3d48d582fbae8b3f2e726670d7a35e2400c783d992bbdeffb` (ledger)\n  - `790273b642e528f620648bf494a3db052bad270ce7ee873324d0cf3b` (consensus)\n  - `97e0f6d6c86dbebf15cc8fdf0981f939b2f2b70928a46511edd49df2` (mercenaries)\n  - `f3ab64b0f97dcf0f91232754603283df5d75a1201337432c04d23e2e` (marketing)\n- **sweep**: 3 signatures out of:\n  - `7095faf3d48d582fbae8b3f2e726670d7a35e2400c783d992bbdeffb` (ledger)\n  - `790273b642e528f620648bf494a3db052bad270ce7ee873324d0cf3b` (consensus)\n  - `97e0f6d6c86dbebf15cc8fdf0981f939b2f2b70928a46511edd49df2` (mercenaries)\n  - `f3ab64b0f97dcf0f91232754603283df5d75a1201337432c04d23e2e` (marketing)\n- **fund**: disabled."
+    }
+  ]
+}
