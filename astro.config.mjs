@@ -37,6 +37,13 @@ export default defineConfig({
             { label: 'Profiling', slug: 'docs/profiling' },
           ],
         },
+        {
+          label: 'PI',
+          items: [
+            { label: 'Quick Start', slug: 'docs/pi/quick-start' },
+            { label: 'Build', slug: 'docs/pi/build' },
+          ],
+        },
       ],
       expressiveCode: {
         themes: ['github-light', 'github-dark'],

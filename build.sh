@@ -148,5 +148,31 @@ git clone --depth 1 https://github.com/pragma-org/amaru-treasury.git
 ./parse-journal.mjs amaru-treasury/journal/mercenaries.md > src/data/mercenaries.json
 ./parse-journal.mjs amaru-treasury/journal/contingency.md > src/data/contingency.json
 
+git clone --depth 1 https://github.com/jeluard/amaru-pi.git
+
+# docs/pi/quick-start.md
+cat 1>tmp.mdx <<EOF
+---
+title: PI Quick Start
+full: true
+---
+import { Aside, Badge, CardGrid, Code, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+EOF
+cat amaru-pi/ui/old/quick-start.md >> tmp.mdx
+callouts_to_aside < tmp.mdx | enable_html_blocks > src/content/docs/docs/pi/quick-start.mdx
+
+# docs/pi/buildt.md
+cat 1>tmp.mdx <<EOF
+---
+title: PI Build
+full: true
+---
+import { Aside, Badge, CardGrid, Code, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+EOF
+cat amaru-pi/ui/old/build.md >> tmp.mdx
+callouts_to_aside < tmp.mdx | enable_html_blocks > src/content/docs/docs/pi/build.mdx
+
 # Finally, build the website
 npm run build
